@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>HRFl"ow Pro</title>
+        <meta> name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!--Main CSS for the whole HRFlow Pro system-->
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    </head>
+    <body>
+        <div class="app-layout">
+            <!--Sidebar navigation used across the whole HR system-->
+            <aside class="sidebar">
+                <div class="sidebar-logo">
+                    <img
+                        scr="{% static 'pictures/logo.png' %}"
+                        alt="HRHub Pro Logo"
+                        class = "sidebar-logo-image"
+                    >
+
+                    <div>
+                        <h2>HRHub Pro</h2>
+                        <p>Payroll ERP</p>
+                    </div>
+                </div>
+
+                <nav class="sidebar-nav">
+                    <a href="{% url 'dashboard' %}" class="nav-link active">Dashboard</a>
+                    <a href="#" class="nav-link">Employees </a>
+                    <a href="#" class="nav-link">Department</a>
+                    <a href="#" class="nav-link">Attendance</a>
+                    <a href="#" class="nav-link">Leave Reqest</a>
+                    <a href="#" class="nav-link">Payroll</a>
+                    <a href="#" class="nav-link">Reports</a>
+                    <a href="#" class="nav-link">Audit Logs</a>
+                </nav>
+
+                <div class="sidebar-footer">
+                    <p>Logged in as</p>
+                    <strong>{{request.user.username}}</strong>
+
+                    <form method="post" action="{% url 'logout' %"}>
+                        {% csrf_token %}
+                        <button type="submit" class="logout-button">Logout</button>
+                    </form>
+                </div>
+            </aside>
+
+            <!-- Main page content-->
+             <main class="main-content">
+
+                <header class="topbar">
+                    <div>
+                        <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+                        <p>{% block page_subtitle %}Welcome to your HR management system{% endblock %}</p>
+                    </div>
+
+                    <div class="topbar-user">
+                        <span>{{ request.user.username }}</span>
+                        <div class="user-avatar">
+                            {{ request.user.username | slice:":1" | upper}}
+                        </div>
+                    </div>
+                </header>
+
+                {% block content %}
+                {%endblock %}
+             </main>
+        </div>
+    </body>
+</html>
+        

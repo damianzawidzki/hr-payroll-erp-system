@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | HRHub Pro{% endblock %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block page_subtitle %}
+Overview of employees, departments, attendance and payroll
+{% endblock %}
+
+{% block content %}
+
+<section class="stats-grid">
+
+    <div class="stat-card purple">
+        <div>
+            <p>Total Employees</p>
+            <h2>{{ total_employees }}</h2>
+        </div>
+        <span>👥</span>
+    </div>
+
+    <div class="stat-card green">
+        <div>
+            <p>Active Employees</p>
+            <h2>{{ active_employees }}</h2>
+        </div>
+        <span>✅</span>
+    </div>
+
+    <div class="stat-card blue">
+        <div>
+            <p>Departments</p>
+            <h2>{{ total_departments }}</h2>
+        </div>
+        <span>🏢</span>
+    </div>
+
+    <div class="stat-card orange">
+        <div>
+            <p>Pending Leaves</p>
+            <h2>{{ pending_leave_requests }}</h2>
+        </div>
+        <span>📅</span>
+    </div>
+
+    <div class="stat-card teal">
+        <div>
+            <p>Present Today</p>
+            <h2>{{ present_today }}</h2>
+        </div>
+        <span>🕘</span>
+    </div>
+
+    <div class="stat-card red">
+        <div>
+            <p>Monthly Payroll</p>
+            <h2>£{{ monthly_payroll_cost }}</h2>
+        </div>
+        <span>💷</span>
+    </div>
+
+</section>
+
+<section class="dashboard-grid">
+
+    <div class="panel">
+        <div class="panel-header">
+            <h3>HR Overview</h3>
+            <p>Core company workforce statistics</p>
+        </div>
+
+        <div class="overview-list">
+            <div>
+                <span>Total Employees</span>
+                <strong>{{ total_employees }}</strong>
+            </div>
+
+            <div>
+                <span>Active Employees</span>
+                <strong>{{ active_employees }}</strong>
+            </div>
+
+            <div>
+                <span>Total Departments</span>
+                <strong>{{ total_departments }}</strong>
+            </div>
+
+            <div>
+                <span>Pending Leave Requests</span>
+                <strong>{{ pending_leave_requests }}</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header">
+            <h3>System Modules</h3>
+            <p>Professional ERP modules planned for this project</p>
+        </div>
+
+        <div class="module-list">
+            <div class="module-item active-module">
+                <strong>Employees</strong>
+                <span>Employee records and job details</span>
+            </div>
+
+            <div class="module-item active-module">
+                <strong>Departments</strong>
+                <span>Company structure and teams</span>
+            </div>
+
+            <div class="module-item">
+                <strong>Attendance</strong>
+                <span>Check in, check out and daily status</span>
+            </div>
+
+            <div class="module-item">
+                <strong>Leave Management</strong>
+                <span>Annual leave, sick leave and approvals</span>
+            </div>
+
+            <div class="module-item">
+                <strong>Payroll</strong>
+                <span>Salary, tax, deductions and payslips</span>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+{% endblock %}
