@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Department | HRHub Pro{% endblock %}
+
+{% block page_title %}Delete Department{% endblock %}
+
+{% block page_subtitle %}
+Confirm department deletion
+{% endblock %}
+
+{% block content %}
+
+<section class="delete-card">
+    <h3>Are you sure?</h3>
+
+    <p>
+        You are about to delete the department:
+        <strong>{{ department.name }}</strong>
+    </p>
+
+    <p class="warning-text">
+        This action cannot be undone.
+    </p>
+
+    <form method="post" class="delete-actions">
+        {% csrf_token %}
+
+        <a href="{% url 'department_list' %}" class="secondary-button">Cancel</a>
+        <button type="submit" class="danger-button">Delete Department</button>
+    </form>
+</section>
+
+{% endblock %}

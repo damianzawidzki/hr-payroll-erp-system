@@ -1,57 +1,74 @@
-{% load statistic %}
+{% load static %}
 
 <!DOCTYPE html>
-<html lang="eng">
-    <head>
-        <meta charset="UTF-8">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
 
-        <title>Login | HRHub Pro</title>
+    <title>Login | HRHub Pro</title>
 
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <!-- Main CSS file for the HRHub Pro system -->
-         <link ref="stylesheet" href="{% static 'css/style.css' %}">
-    </head>
-    <body class="login-body">
+    <!-- 
+        Main stylesheet for HRHub Pro.
+        The version number forces the browser to load the newest CSS file.
+    -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=3">
+</head>
+<body class="login-body">
 
-        <div class="login-wrapper">
-            <div class="login-card">
-                <div class="login-brand">
-                    <!--This logo is stored inside static/pictures/logo.png-->
-                    <img
-                        src="{% static 'picture/logo.png' %}"
-                        alt="HRHub Pro Logo"
-                        class="login-logo-image"
-                    >
+<div class="login-wrapper">
 
-                    <h1>HRHub Pro</h1>
-                    <p>Professional HR & Payroll ERP System</p>
-                </div>
+    <div class="login-card">
 
-                {% if form.errors %}
-                    <div class="alert-error">
-                        Invalid username or password. Please try again.
-                    </div>
-                {% end if %}
+        <div class="login-brand">
+            <img
+                src="{% static 'pictures/logo.png' %}"
+                alt="HRHub Pro Logo"
+                class="login-logo-image"
+            >
 
-                <form method="post" class="login-form">
-                    {% csrf_token %}
-
-                    <lable for="id_username">Username</lable>
-                    <input
-                        type="text"
-                        name="username"
-                        id="id_username"
-                        required
-                    >
-                    
-                    <button type="submit">Sign In</button>
-                </form>
-
-                <div class="login-footer">
-                    <p>HRHub Pro business webside</p>
-                </div>
-            </div>
+            <h1>HRHub Pro</h1>
+            <p>Professional HR & Payroll ERP System</p>
         </div>
-    </body>
+
+        {% if form.errors %}
+            <div class="alert-error">
+                Invalid username or password. Please try again.
+            </div>
+        {% endif %}
+
+        <form method="post" class="login-form">
+            {% csrf_token %}
+
+            <label for="id_username">Username</label>
+            <input
+                type="text"
+                name="username"
+                id="id_username"
+                placeholder="Enter your username"
+                required
+            >
+
+            <label for="id_password">Password</label>
+            <input
+                type="password"
+                name="password"
+                id="id_password"
+                placeholder="Enter your password"
+                required
+            >
+
+            <button type="submit">Sign In</button>
+        </form>
+
+        <div class="login-footer">
+            <p>Demo business system for portfolio project</p>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
 </html>

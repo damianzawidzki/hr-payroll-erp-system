@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Department Details | HRHub Pro{% endblock %}
+
+{% block page_title %}Department Details{% endblock %}
+
+{% block page_subtitle %}
+View department information and management details
+{% endblock %}
+
+{% block content %}
+
+<section class="detail-card">
+    <div class="detail-header">
+        <div>
+            <h3>{{ department.name }}</h3>
+            <p>Department information</p>
+        </div>
+
+        <div class="detail-actions">
+            <a href="{% url 'department_update' department.pk %}" class="primary-button">Edit</a>
+            <a href="{% url 'department_list' %}" class="secondary-button">Back</a>
+        </div>
+    </div>
+
+    <div class="detail-grid">
+        <div class="detail-item">
+            <span>Department Name</span>
+            <strong>{{ department.name }}</strong>
+        </div>
+
+        <div class="detail-item">
+            <span>Manager Name</span>
+            <strong>
+                {% if department.manager_name %}
+                    {{ department.manager_name }}
+                {% else %}
+                    Not assigned
+                {% endif %}
+            </strong>
+        </div>
+
+        <div class="detail-item">
+            <span>Status</span>
+            <strong>
+                {% if department.is_active %}
+                    Active
+                {% else %}
+                    Inactive
+                {% endif %}
+            </strong>
+        </div>
+
+        <div class="detail-item">
+            <span>Created At</span>
+            <strong>{{ department.created_at|date:"d M Y H:i" }}</strong>
+        </div>
+
+        <div class="detail-item full-width">
+            <span>Description</span>
+            <strong>
+                {% if department.description %}
+                    {{ department.description }}
+                {% else %}
+                    No description provided.
+                {% endif %}
+            </strong>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

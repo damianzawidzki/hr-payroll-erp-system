@@ -1,74 +1,94 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>HRFl"ow Pro</title>
-        <meta> name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+    <meta charset="UTF-8">
 
-        <!--Main CSS for the whole HRFlow Pro system-->
-        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>{% block title %}HRHub Pro{% endblock %}</title>
 
-    </head>
-    <body>
-        <div class="app-layout">
-            <!--Sidebar navigation used across the whole HR system-->
-            <aside class="sidebar">
-                <div class="sidebar-logo">
-                    <img
-                        scr="{% static 'pictures/logo.png' %}"
-                        alt="HRHub Pro Logo"
-                        class = "sidebar-logo-image"
-                    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-                    <div>
-                        <h2>HRHub Pro</h2>
-                        <p>Payroll ERP</p>
-                    </div>
-                </div>
+    <!-- 
+        Main stylesheet for HRHub Pro.
+        The version number forces the browser to load the newest CSS file.
+    -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=3">
+</head>
+<body>
 
-                <nav class="sidebar-nav">
-                    <a href="{% url 'dashboard' %}" class="nav-link active">Dashboard</a>
-                    <a href="#" class="nav-link">Employees </a>
-                    <a href="#" class="nav-link">Department</a>
-                    <a href="#" class="nav-link">Attendance</a>
-                    <a href="#" class="nav-link">Leave Reqest</a>
-                    <a href="#" class="nav-link">Payroll</a>
-                    <a href="#" class="nav-link">Reports</a>
-                    <a href="#" class="nav-link">Audit Logs</a>
-                </nav>
+<div class="app-layout">
 
-                <div class="sidebar-footer">
-                    <p>Logged in as</p>
-                    <strong>{{request.user.username}}</strong>
+    <!-- Sidebar navigation used across the HR system -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <img
+                src="{% static 'pictures/logo.png' %}"
+                alt="HRHub Pro Logo"
+                class="sidebar-logo-image"
+            >
 
-                    <form method="post" action="{% url 'logout' %"}>
-                        {% csrf_token %}
-                        <button type="submit" class="logout-button">Logout</button>
-                    </form>
-                </div>
-            </aside>
-
-            <!-- Main page content-->
-             <main class="main-content">
-
-                <header class="topbar">
-                    <div>
-                        <h1>{% block page_title %}Dashboard{% endblock %}</h1>
-                        <p>{% block page_subtitle %}Welcome to your HR management system{% endblock %}</p>
-                    </div>
-
-                    <div class="topbar-user">
-                        <span>{{ request.user.username }}</span>
-                        <div class="user-avatar">
-                            {{ request.user.username | slice:":1" | upper}}
-                        </div>
-                    </div>
-                </header>
-
-                {% block content %}
-                {%endblock %}
-             </main>
+            <div>
+                <h2>HRHub Pro</h2>
+                <p>Payroll ERP</p>
+            </div>
         </div>
-    </body>
+
+        <nav class="sidebar-nav">
+            <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
+            <a href="#" class="nav-link">Employees</a>
+            <a href="{% url 'department_list' %}" class="nav-link">Departments</a>
+            <a href="#" class="nav-link">Attendance</a>
+            <a href="#" class="nav-link">Leave Requests</a>
+            <a href="#" class="nav-link">Payroll</a>
+            <a href="#" class="nav-link">Reports</a>
+            <a href="#" class="nav-link">Audit Logs</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <p>Logged in as</p>
+            <strong>{{ request.user.username }}</strong>
+
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="logout-button">Logout</button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- Main content area -->
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+                <p>{% block page_subtitle %}Welcome to your HR management system{% endblock %}</p>
+            </div>
+
+            <div class="topbar-user">
+                <span>{{ request.user.username }}</span>
+                <div class="user-avatar">
+                    {{ request.user.username|slice:":1"|upper }}
+                </div>
+            </div>
+        </header>
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message message-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+</div>
+
+</body>
 </html>
-        

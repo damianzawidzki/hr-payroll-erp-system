@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Departments | HRHub Pro{% endblock %}
+
+{% block page_title %}Departments{% endblock %}
+
+{% block page_subtitle %}
+Manage company departments, teams and department managers
+{% endblock %}
+
+{% block content %}
+
+<section clas="page-actions">
+    <form method="get" class="search-form">
+        <input
+            type="text"
+            name="search"
+            value="{{ search_query }}"
+            placeholder="Search departments or managers..."
+        >
+
+        <button type="submit">Search</button>
+    </form>
+
+    <a href="{% url 'department_create' %}" class="primary-button">
+        +Add Department
+    </a>
+</section>
+
+<section class="table-card">
+    <div class="table-header">
+        <h3>Department List</h3>
+        <p>All departments registered in the HR system</p>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Department Name</th>
+                <th>Manager</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for department in departments %}
+               <tr>
+                    <td>
+                        <strong>{{ department.name }}</strong>
+                    </td>
+
+                    <td>
+                        {% if department.manager_name %}
+                            {{ department.manager_name }}
+                        {% else %}
+                            <em>No manager assigned</em>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if department.is_active %}
+                            <span class="badge badge-success">Active</span>
+                        {% else %}
+                            <span class="badge badge-danger">Inactive</span>
+                        {% endif %}
+                    </td>
+
+                    <td>{{ department.created_at|date:"d M Y" }}</td>
+
+                    <td class="table-actions">
+                        <a href="{% url 'department_detail' department.pk %}" >View</a>
+                        <a href="{% url 'department_update' department.pk %}" c>Edit</a>
+                        <a href="{% url 'department_delete' department.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </td>
+               </tr>
+               {% empty %}
+               <tr>
+                   <td colspan="5" class="empty-table">
+                       No departments found. Create your first department.
+                   </td>
+               </tr>
+               {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+{% endblock %}

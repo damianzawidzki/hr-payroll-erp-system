@@ -5,7 +5,7 @@
 {% block page_title %}Dashboard{% endblock %}
 
 {% block page_subtitle %}
-Overview of employees, departments, attendance and payroll
+Workforce overview and operational summary
 {% endblock %}
 
 {% block content %}
@@ -17,7 +17,7 @@ Overview of employees, departments, attendance and payroll
             <p>Total Employees</p>
             <h2>{{ total_employees }}</h2>
         </div>
-        <span>👥</span>
+        <span>EMP</span>
     </div>
 
     <div class="stat-card green">
@@ -25,7 +25,7 @@ Overview of employees, departments, attendance and payroll
             <p>Active Employees</p>
             <h2>{{ active_employees }}</h2>
         </div>
-        <span>✅</span>
+        <span>ACT</span>
     </div>
 
     <div class="stat-card blue">
@@ -33,15 +33,15 @@ Overview of employees, departments, attendance and payroll
             <p>Departments</p>
             <h2>{{ total_departments }}</h2>
         </div>
-        <span>🏢</span>
+        <span>DEP</span>
     </div>
 
     <div class="stat-card orange">
         <div>
-            <p>Pending Leaves</p>
+            <p>Pending Leave</p>
             <h2>{{ pending_leave_requests }}</h2>
         </div>
-        <span>📅</span>
+        <span>LVE</span>
     </div>
 
     <div class="stat-card teal">
@@ -49,7 +49,7 @@ Overview of employees, departments, attendance and payroll
             <p>Present Today</p>
             <h2>{{ present_today }}</h2>
         </div>
-        <span>🕘</span>
+        <span>ATT</span>
     </div>
 
     <div class="stat-card red">
@@ -57,7 +57,7 @@ Overview of employees, departments, attendance and payroll
             <p>Monthly Payroll</p>
             <h2>£{{ monthly_payroll_cost }}</h2>
         </div>
-        <span>💷</span>
+        <span>PAY</span>
     </div>
 
 </section>
@@ -66,8 +66,8 @@ Overview of employees, departments, attendance and payroll
 
     <div class="panel">
         <div class="panel-header">
-            <h3>HR Overview</h3>
-            <p>Core company workforce statistics</p>
+            <h3>Workforce Summary</h3>
+            <p>Current company workforce status</p>
         </div>
 
         <div class="overview-list">
@@ -82,12 +82,12 @@ Overview of employees, departments, attendance and payroll
             </div>
 
             <div>
-                <span>Total Departments</span>
+                <span>Departments</span>
                 <strong>{{ total_departments }}</strong>
             </div>
 
             <div>
-                <span>Pending Leave Requests</span>
+                <span>Pending Leave</span>
                 <strong>{{ pending_leave_requests }}</strong>
             </div>
         </div>
@@ -95,34 +95,34 @@ Overview of employees, departments, attendance and payroll
 
     <div class="panel">
         <div class="panel-header">
-            <h3>System Modules</h3>
-            <p>Professional ERP modules planned for this project</p>
+            <h3>Operations</h3>
+            <p>Core HR and payroll areas</p>
         </div>
 
         <div class="module-list">
             <div class="module-item active-module">
                 <strong>Employees</strong>
-                <span>Employee records and job details</span>
+                <span>Employee records and employment details</span>
             </div>
 
             <div class="module-item active-module">
                 <strong>Departments</strong>
-                <span>Company structure and teams</span>
+                <span>Company structure and management areas</span>
             </div>
 
             <div class="module-item">
                 <strong>Attendance</strong>
-                <span>Check in, check out and daily status</span>
+                <span>Daily attendance and working hours</span>
             </div>
 
             <div class="module-item">
                 <strong>Leave Management</strong>
-                <span>Annual leave, sick leave and approvals</span>
+                <span>Absence requests and approvals</span>
             </div>
 
             <div class="module-item">
                 <strong>Payroll</strong>
-                <span>Salary, tax, deductions and payslips</span>
+                <span>Salary records and payroll processing</span>
             </div>
         </div>
     </div>

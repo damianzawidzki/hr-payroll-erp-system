@@ -1,12 +1,14 @@
 """
-URL routes for the dashboard module.
+Dashboard URL configuration for HRHub Pro.
 
-The dashboard is the main landing page after login.
+This file defines the URL route for the dashboard page.
 """
 
 from django.urls import path
-from . import views
 
-urlpattens = [
-    path('' , views.dashboard_view, name='dashboard'),
+from .views import dashboard_view
+
+
+urlpatterns = [
+    path("", dashboard_view, name="dashboard"),
 ]
