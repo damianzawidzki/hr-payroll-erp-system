@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }} | HRHub Pro{% endblock %}
+
+{% block page_title %}{{ page_title }}{% endblock %}
+
+{% block page_subtitle %}
+Attendance record information
+{% endblock %}
+
+{% block content %}
+
+<section class="form-card">
+    <div class="form-header">
+        <h3>{{ page_title }}</h3>
+        <p>Employee attendance details</p>
+    </div>
+
+    <form method="post" class="standard-form">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="{{ form.employee.id_for_label }}">Employee</label>
+            {{ form.employee }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.date.id_for_label }}">Date</label>
+            {{ form.date }}
+        </div>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="{{ form.check_in_time.id_for_label }}">Check In</label>
+                {{ form.check_in_time }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.check_out_time.id_for_label }}">Check Out</label>
+                {{ form.check_out_time }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.status.id_for_label }}">Status</label>
+                {{ form.status }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.total_hours.id_for_label }}">Total Hours</label>
+                {{ form.total_hours }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.notes.id_for_label }}">Notes</label>
+            {{ form.notes }}
+        </div>
+
+        <div class="form-actions">
+            <a href="{% url 'attendance_list' %}" class="secondary-button">Cancel</a>
+            <button type="submit" class="primary-button">{{ button_text }}</button>
+        </div>
+    </form>
+</section>
+
+{% endblock %}

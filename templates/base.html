@@ -9,8 +9,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Main stylesheet for the HRHub Pro system -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=4">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=5">
 </head>
 <body>
 
@@ -34,7 +33,7 @@
             <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
             <a href="{% url 'employee_list' %}" class="nav-link">Employees</a>
             <a href="{% url 'department_list' %}" class="nav-link">Departments</a>
-            <a href="#" class="nav-link">Attendance</a>
+            <a href="{% url 'attendance_list' %}" class="nav-link">Attendance</a>
             <a href="#" class="nav-link">Leave Requests</a>
             <a href="#" class="nav-link">Payroll</a>
             <a href="#" class="nav-link">Reports</a>

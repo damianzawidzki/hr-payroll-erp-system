@@ -1,14 +1,5 @@
 """
 Main URL configuration for HRHub Pro.
-
-This file connects the main project routes:
-- Home redirect
-- Django Admin
-- Login
-- Logout
-- Dashboard
-- Employees
-- Departments
 """
 
 from django.contrib import admin
@@ -47,4 +38,5 @@ urlpatterns = [
     path("dashboard/", include("dashboard.urls")),
     path("employees/", include("employees.urls")),
     path("departments/", include("departments.urls")),
+    path("attendance/", include("attendance.urls")),
 ]

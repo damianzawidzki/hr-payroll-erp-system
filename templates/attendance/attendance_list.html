@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block title %}Attendance | HRHub Pro{% endblock %}
+
+{% block page_title %}Attendance{% endblock %}
+
+{% block page_subtitle %}
+Daily attendance records and working hours
+{% endblock %}
+
+{% block content %}
+
+<section class="page-actions">
+    <form method="get" class="search-form employee-search-form">
+        <input
+            type="text"
+            name="search"
+            value="{{ search_query }}"
+            placeholder="Search employee..."
+        >
+
+        <select name="status" class="filter-select">
+            <option value="">All Statuses</option>
+
+            {% for value, label in status_choices %}
+                <option
+                    value="{{ value }}"
+                    {% if status_filter == value %}selected{% endif %}
+                >
+                    {{ label }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Filter</button>
+    </form>
+
+    <a href="{% url 'attendance_create' %}" class="primary-button">
+        + Add Record
+    </a>
+</section>
+
+<section class="table-card">
+    <div class="table-header">
+        <h3>Attendance Records</h3>
+        <p>Employee attendance history</p>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Employee</th>
+                <th>Department</th>
+                <th>Check In</th>
+                <th>Check Out</th>
+                <th>Status</th>
+                <th>Total Hours</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for record in attendance_records %}
+                <tr>
+                    <td>{{ record.date|date:"d M Y" }}</td>
+
+                    <td>{{ record.employee.full_name }}</td>
+
+                    <td>
+                        {% if record.employee.department %}
+                            {{ record.employee.department.name }}
+                        {% else %}
+                            Not assigned
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if record.check_in_time %}
+                            {{ record.check_in_time|time:"H:i" }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if record.check_out_time %}
+                            {{ record.check_out_time|time:"H:i" }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if record.status == "PRESENT" %}
+                            <span class="badge badge-success">Present</span>
+                        {% elif record.status == "ABSENT" %}
+                            <span class="badge badge-danger">Absent</span>
+                        {% else %}
+                            <span class="badge badge-warning">{{ record.get_status_display }}</span>
+                        {% endif %}
+                    </td>
+
+                    <td>{{ record.total_hours }}</td>
+
+                    <td class="table-actions">
+                        <a href="{% url 'attendance_update' record.pk %}">Edit</a>
+                        <a href="{% url 'attendance_delete' record.pk %}" class="danger-link">Delete</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="8" class="empty-table">
+                        No attendance records found.
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+{% endblock %}

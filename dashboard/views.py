@@ -1,20 +1,12 @@
 """
 Dashboard views for HRHub Pro.
-
-This file contains the main dashboard page logic.
-The dashboard displays basic HR statistics from the database.
-
-At this stage, the dashboard uses real data from:
-- Employees
-- Departments
-
-Other values such as leave requests, attendance and payroll are temporary
-placeholders. They will be replaced with real module data later.
 """
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from django.utils import timezone
 
+from attendance.models import Attendance
 from departments.models import Department
 from employees.models import Employee
 
@@ -23,24 +15,21 @@ from employees.models import Employee
 def dashboard_view(request):
     """
     Display the main dashboard page.
-
-    This view counts employees and departments from the database.
-    It gives the system a professional starting dashboard after login.
     """
+
+    today = timezone.localdate()
 
     total_employees = Employee.objects.count()
     active_employees = Employee.objects.filter(status="ACTIVE").count()
     total_departments = Department.objects.count()
+    present_today = Attendance.objects.filter(date=today, status="PRESENT").count()
 
     context = {
         "total_employees": total_employees,
         "active_employees": active_employees,
         "total_departments": total_departments,
-
-        # Temporary dashboard values.
-        # These will be connected to real modules later.
         "pending_leave_requests": 0,
-        "present_today": 0,
+        "present_today": present_today,
         "monthly_payroll_cost": 0,
     }
 
