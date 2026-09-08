@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Employee | HRHub Pro{% endblock %}
+
+{% block page_title %}Delete Employee{% endblock %}
+
+{% block page_subtitle %}
+Confirm employee record deletion
+{% endblock %}
+
+{% block content %}
+
+<section class="delete-card">
+    <h3>Delete employee record</h3>
+
+    <p>
+        You are about to delete:
+        <strong>{{ employee.full_name }}</strong>
+    </p>
+
+    <p class="warning-text">
+        This action cannot be undone.
+    </p>
+
+    <form method="post" class="delete-actions">
+        {% csrf_token %}
+
+        <a href="{% url 'employee_list' %}" class="secondary-button">Cancel</a>
+        <button type="submit" class="danger-button">Delete Employee</button>
+    </form>
+</section>
+
+{% endblock %}

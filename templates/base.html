@@ -9,17 +9,13 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- 
-        Main stylesheet for HRHub Pro.
-        The version number forces the browser to load the newest CSS file.
-    -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=3">
+    <!-- Main stylesheet for the HRHub Pro system -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=4">
 </head>
 <body>
 
 <div class="app-layout">
 
-    <!-- Sidebar navigation used across the HR system -->
     <aside class="sidebar">
         <div class="sidebar-logo">
             <img
@@ -36,7 +32,7 @@
 
         <nav class="sidebar-nav">
             <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
-            <a href="#" class="nav-link">Employees</a>
+            <a href="{% url 'employee_list' %}" class="nav-link">Employees</a>
             <a href="{% url 'department_list' %}" class="nav-link">Departments</a>
             <a href="#" class="nav-link">Attendance</a>
             <a href="#" class="nav-link">Leave Requests</a>
@@ -56,13 +52,12 @@
         </div>
     </aside>
 
-    <!-- Main content area -->
     <main class="main-content">
 
         <header class="topbar">
             <div>
                 <h1>{% block page_title %}Dashboard{% endblock %}</h1>
-                <p>{% block page_subtitle %}Welcome to your HR management system{% endblock %}</p>
+                <p>{% block page_subtitle %}Workforce management system{% endblock %}</p>
             </div>
 
             <div class="topbar-user">

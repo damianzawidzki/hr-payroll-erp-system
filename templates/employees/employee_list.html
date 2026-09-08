@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}Employees | HRHub Pro{% endblock %}
+
+{% block page_title %}Employees{% endblock %}
+
+{% block page_subtitle %}
+Employee records and employment details
+{% endblock %}
+
+{% block content %}
+
+<section class="page-actions">
+    <form method="get" class="search-form employee-search-form">
+        <input
+            type="text"
+            name="search"
+            value="{{ search_query }}"
+            placeholder="Search employees..."
+        >
+
+        <select name="department" class="filter-select">
+            <option value="">All Departments</option>
+
+            {% for department in departments %}
+                <option
+                    value="{{ department.id }}"
+                    {% if department_filter == department.id|stringformat:"s" %}selected{% endif %}
+                >
+                    {{ department.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <select name="status" class="filter-select">
+            <option value="">All Statuses</option>
+
+            {% for value, label in status_choices %}
+                <option
+                    value="{{ value }}"
+                    {% if status_filter == value %}selected{% endif %}
+                >
+                    {{ label }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Filter</button>
+    </form>
+
+    <a href="{% url 'employee_create' %}" class="primary-button">
+        + Add Employee
+    </a>
+</section>
+
+<section class="table-card">
+    <div class="table-header">
+        <h3>Employee Directory</h3>
+        <p>Company employee records</p>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Employee No.</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Job Title</th>
+                <th>Department</th>
+                <th>Status</th>
+                <th>Salary</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for employee in employees %}
+                <tr>
+                    <td>
+                        <strong>{{ employee.employee_number }}</strong>
+                    </td>
+
+                    <td>{{ employee.full_name }}</td>
+
+                    <td>{{ employee.email }}</td>
+
+                    <td>{{ employee.job_title }}</td>
+
+                    <td>
+                        {% if employee.department %}
+                            {{ employee.department.name }}
+                        {% else %}
+                            Not assigned
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if employee.status == "ACTIVE" %}
+                            <span class="badge badge-success">Active</span>
+                        {% elif employee.status == "TERMINATED" %}
+                            <span class="badge badge-danger">Terminated</span>
+                        {% else %}
+                            <span class="badge badge-warning">{{ employee.get_status_display }}</span>
+                        {% endif %}
+                    </td>
+
+                    <td>£{{ employee.salary }}</td>
+
+                    <td class="table-actions">
+                        <a href="{% url 'employee_detail' employee.pk %}">View</a>
+                        <a href="{% url 'employee_update' employee.pk %}">Edit</a>
+                        <a href="{% url 'employee_delete' employee.pk %}" class="danger-link">Delete</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="8" class="empty-table">
+                        No employees found.
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+{% endblock %}

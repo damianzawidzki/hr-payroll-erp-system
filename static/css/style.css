@@ -860,3 +860,62 @@ body {
         grid-template-columns: 1fr;
     }
 }
+/* Employee module */
+
+.employee-search-form {
+    max-width: 900px;
+}
+
+.filter-select {
+    min-width: 180px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+    outline: none;
+    background: #ffffff;
+    color: #374151;
+}
+
+.filter-select:focus {
+    border-color: var(--primary);
+}
+
+.wide-form-card {
+    max-width: 1200px;
+}
+
+.form-section-title {
+    margin-top: 8px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-main);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.badge-warning {
+    background: #fffbeb;
+    color: #92400e;
+}
+
+@media (max-width: 900px) {
+    .employee-search-form {
+        flex-direction: column;
+        max-width: none;
+    }
+
+    .filter-select {
+        width: 100%;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}

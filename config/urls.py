@@ -7,6 +7,7 @@ This file connects the main project routes:
 - Login
 - Logout
 - Dashboard
+- Employees
 - Departments
 """
 
@@ -19,9 +20,6 @@ from django.urls import include, path
 def home_redirect(request):
     """
     Redirect the root URL to the dashboard.
-
-    If the user is not logged in, Django will redirect them to the login page
-    because the dashboard view requires authentication.
     """
 
     return redirect("dashboard")
@@ -47,5 +45,6 @@ urlpatterns = [
     ),
 
     path("dashboard/", include("dashboard.urls")),
+    path("employees/", include("employees.urls")),
     path("departments/", include("departments.urls")),
 ]
