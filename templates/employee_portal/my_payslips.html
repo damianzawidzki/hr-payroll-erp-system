@@ -1,0 +1,110 @@
+{% extends 'employee_portal/base_employee.html' %}
+
+{% block title %}My Payslips | HRHub Pro{% endblock %}
+
+{% block page_title %}My Payslips{% endblock %}
+
+{% block page_subtitle %}
+Salary payment records
+{% endblock %}
+
+{% block content %}
+
+<section class="stats-grid">
+
+    <div class="stat-card blue">
+        <div>
+            <p>Total Gross</p>
+            <h2>£{{ total_gross }}</h2>
+        </div>
+        <span>GRS</span>
+    </div>
+
+    <div class="stat-card orange">
+        <div>
+            <p>Deductions</p>
+            <h2>£{{ total_deductions }}</h2>
+        </div>
+        <span>DED</span>
+    </div>
+
+    <div class="stat-card green">
+        <div>
+            <p>Total Net</p>
+            <h2>£{{ total_net }}</h2>
+        </div>
+        <span>NET</span>
+    </div>
+
+</section>
+
+<section class="table-card">
+    <div class="table-header">
+        <h3>Payslips</h3>
+        <p>Issued salary documents</p>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Period</th>
+                <th>Payment Date</th>
+                <th>Gross</th>
+                <th>Deductions</th>
+                <th>Net</th>
+                <th>Status</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for payslip in payslips %}
+                <tr>
+                    <td>
+                        {{ payslip.pay_period_start|date:"d M Y" }}
+                        -
+                        {{ payslip.pay_period_end|date:"d M Y" }}
+                    </td>
+
+                    <td>
+                        {% if payslip.payment_date %}
+                            {{ payslip.payment_date|date:"d M Y" }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+
+                    <td>£{{ payslip.gross_pay }}</td>
+                    <td>£{{ payslip.deductions }}</td>
+                    <td><strong>£{{ payslip.net_pay }}</strong></td>
+
+                    <td>
+                        {% if payslip.status == "PAID" %}
+                            <span class="badge badge-success">Paid</span>
+                        {% elif payslip.status == "ISSUED" %}
+                            <span class="badge badge-warning">Issued</span>
+                        {% else %}
+                            <span class="badge badge-muted">{{ payslip.get_status_display }}</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if payslip.notes %}
+                            {{ payslip.notes }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="7" class="empty-table">
+                        No payslips found.
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+{% endblock %}

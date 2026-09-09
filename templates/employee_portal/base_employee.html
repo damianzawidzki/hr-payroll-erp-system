@@ -1,0 +1,87 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <title>{% block title %}Employee Portal | HRHub Pro{% endblock %}</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=90">
+</head>
+<body>
+
+<div class="app-layout">
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <img
+                src="{% static 'pictures/logo.png' %}"
+                alt="HRHub Pro Logo"
+                class="sidebar-logo-image"
+            >
+
+            <div>
+                <h2>HRHub Pro</h2>
+                <p>Employee Portal</p>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{% url 'employee_self_dashboard' %}" class="nav-link">My Dashboard</a>
+            <a href="{% url 'my_profile' %}" class="nav-link">My Profile</a>
+            <a href="{% url 'my_shifts' %}" class="nav-link">My Shifts</a>
+            <a href="{% url 'my_shift_team' %}" class="nav-link">My Team</a>
+            <a href="{% url 'my_attendance' %}" class="nav-link">My Attendance</a>
+            <a href="{% url 'my_leave_list' %}" class="nav-link">My Leave</a>
+            <a href="{% url 'my_payslips' %}" class="nav-link">My Payslips</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <p>Signed in as</p>
+            <strong>{{ request.user.username }}</strong>
+
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="logout-button">Logout</button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <h1>{% block page_title %}My Dashboard{% endblock %}</h1>
+                <p>{% block page_subtitle %}Employee self-service{% endblock %}</p>
+            </div>
+
+            <div class="topbar-user">
+                <span>{{ request.user.username }}</span>
+                <div class="user-avatar">
+                    {{ request.user.username|slice:":1"|upper }}
+                </div>
+            </div>
+        </header>
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message message-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+</div>
+
+</body>
+</html>

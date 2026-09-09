@@ -9,7 +9,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=5">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=6">
 </head>
 <body>
 
@@ -34,8 +34,9 @@
             <a href="{% url 'employee_list' %}" class="nav-link">Employees</a>
             <a href="{% url 'department_list' %}" class="nav-link">Departments</a>
             <a href="{% url 'attendance_list' %}" class="nav-link">Attendance</a>
-            <a href="#" class="nav-link">Leave Requests</a>
-            <a href="#" class="nav-link">Payroll</a>
+            <a href="{% url 'leave_request_list' %}" class="nav-link">Leave Requests</a>
+            <a href="{% url 'shift_calendar' %}" class="nav-link">Shifts</a>
+            <a href="{% url 'payslip_list' %}" class="nav-link">Payroll</a>
             <a href="#" class="nav-link">Reports</a>
             <a href="#" class="nav-link">Audit Logs</a>
         </nav>

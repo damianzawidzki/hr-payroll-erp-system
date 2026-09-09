@@ -1,0 +1,70 @@
+{% extends 'employee_portal/base_employee.html' %}
+
+{% block title %}My Shifts | HRHub Pro{% endblock %}
+
+{% block page_title %}My Shifts{% endblock %}
+
+{% block page_subtitle %}
+Monthly work schedule
+{% endblock %}
+
+{% block content %}
+
+<section class="calendar-toolbar">
+    <div>
+        <h3>{{ month_name }} {{ selected_year }}</h3>
+        <p>Personal shift calendar</p>
+    </div>
+
+    <div class="calendar-actions">
+        <a
+            href="{% url 'my_shifts' %}?month={{ previous_month }}&year={{ previous_year }}"
+            class="secondary-button"
+        >
+            Previous
+        </a>
+
+        <a
+            href="{% url 'my_shifts' %}?month={{ next_month }}&year={{ next_year }}"
+            class="primary-button"
+        >
+            Next
+        </a>
+    </div>
+</section>
+
+<section class="employee-month-calendar">
+
+    {% for cell in calendar_cells %}
+        <div
+            class="
+                employee-calendar-day
+                {% if cell.is_weekend %}employee-weekend-day{% endif %}
+                {% if cell.is_today %}employee-today-day{% endif %}
+            "
+        >
+            <div class="employee-calendar-day-header">
+                <strong>{{ cell.day_number }}</strong>
+                <span>{{ cell.day_name }}</span>
+            </div>
+
+            <div class="employee-shift-list">
+                {% for shift in cell.shifts %}
+                    <div class="employee-shift-card">
+                        <strong>{{ shift.get_shift_type_display }}</strong>
+                        <span>{{ shift.start_time|time:"H:i" }} - {{ shift.end_time|time:"H:i" }}</span>
+
+                        {% if shift.location %}
+                            <small>{{ shift.location }}</small>
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    <span class="employee-no-shift">Off</span>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+
+</section>
+
+{% endblock %}

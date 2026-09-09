@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }} | HRHub Pro{% endblock %}
+
+{% block page_title %}{{ page_title }}{% endblock %}
+
+{% block page_subtitle %}
+Leave request decision
+{% endblock %}
+
+{% block content %}
+
+<section class="form-card">
+    <div class="form-header">
+        <h3>{{ leave_request.employee.full_name }}</h3>
+        <p>{{ leave_request.get_leave_type_display }} | {{ leave_request.start_date|date:"d M Y" }} - {{ leave_request.end_date|date:"d M Y" }}</p>
+    </div>
+
+    <form method="post" class="standard-form">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="{{ form.manager_comment.id_for_label }}">Manager Comment</label>
+            {{ form.manager_comment }}
+        </div>
+
+        <div class="form-actions">
+            <a href="{% url 'leave_request_detail' leave_request.pk %}" class="secondary-button">Cancel</a>
+
+            {% if decision_type == "approve" %}
+                <button type="submit" class="primary-button">{{ button_text }}</button>
+            {% else %}
+                <button type="submit" class="danger-button">{{ button_text }}</button>
+            {% endif %}
+        </div>
+    </form>
+</section>
+
+{% endblock %}

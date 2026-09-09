@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Leave Request Details | HRHub Pro{% endblock %}
+
+{% block page_title %}Leave Request Details{% endblock %}
+
+{% block page_subtitle %}
+Employee absence record
+{% endblock %}
+
+{% block content %}
+
+<section class="detail-card wide-form-card">
+    <div class="detail-header">
+        <div>
+            <h3>{{ leave_request.employee.full_name }}</h3>
+            <p>{{ leave_request.get_leave_type_display }}</p>
+        </div>
+
+        <div class="detail-actions">
+            {% if leave_request.status == "PENDING" %}
+                <a href="{% url 'leave_request_approve' leave_request.pk %}" class="primary-button">Approve</a>
+                <a href="{% url 'leave_request_reject' leave_request.pk %}" class="danger-button">Reject</a>
+            {% endif %}
+
+            <a href="{% url 'leave_request_update' leave_request.pk %}" class="secondary-button">Edit</a>
+            <a href="{% url 'leave_request_list' %}" class="secondary-button">Back</a>
+        </div>
+    </div>
+
+    <div class="detail-grid">
+        <div class="detail-item">
+            <span>Employee</span>
+            <strong>{{ leave_request.employee.full_name }}</strong>
+        </div>
+
+        <div class="detail-item">
+            <span>Department</span>
+            <strong>
+                {% if leave_request.employee.department %}
+                    {{ leave_request.employee.department.name }}
+                {% else %}
+                    Not assigned
+                {% endif %}
+            </strong>
+        </div>
+
+        <div class="detail-item">
+            <span>Leave Type</span>
+            <strong>{{ leave_request.get_leave_type_display }}</strong>
+        </div>
+
+        <div class="detail-item">
+            <span>Status</span>
+            <strong>{{ leave_request.get_status_display }}</strong>
+        </div>
+
+        <div class="detail-item">
+            <span>Start Date</span>
+            <strong>{{ leave_request.start_date|date:"d M Y" }}</strong>
+        </div>
+
+        <div class="detail-item">
+            <span>End Date</span>
+            <strong>{{ leave_request.end_date|date:"d M Y" }}</strong>
+        </div>
+
+        <div class="detail-item">
+            <span>Total Days</span>
+            <strong>{{ leave_request.total_days }}</strong>
+        </div>
+
+        <div class="detail-item">
+            <span>Created At</span>
+            <strong>{{ leave_request.created_at|date:"d M Y H:i" }}</strong>
+        </div>
+
+        <div class="detail-item full-width">
+            <span>Reason</span>
+            <strong>
+                {% if leave_request.reason %}
+                    {{ leave_request.reason }}
+                {% else %}
+                    Not provided
+                {% endif %}
+            </strong>
+        </div>
+
+        <div class="detail-item full-width">
+            <span>Manager Comment</span>
+            <strong>
+                {% if leave_request.manager_comment %}
+                    {{ leave_request.manager_comment }}
+                {% else %}
+                    Not provided
+                {% endif %}
+            </strong>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

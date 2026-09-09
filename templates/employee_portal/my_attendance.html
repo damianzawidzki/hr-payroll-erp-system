@@ -1,0 +1,128 @@
+{% extends 'employee_portal/base_employee.html' %}
+
+{% block title %}My Attendance | HRHub Pro{% endblock %}
+
+{% block page_title %}My Attendance{% endblock %}
+
+{% block page_subtitle %}
+Attendance records and working hours
+{% endblock %}
+
+{% block content %}
+
+<section class="stats-grid">
+
+    <div class="stat-card green">
+        <div>
+            <p>Present</p>
+            <h2>{{ present_count }}</h2>
+        </div>
+        <span>PRE</span>
+    </div>
+
+    <div class="stat-card orange">
+        <div>
+            <p>Late</p>
+            <h2>{{ late_count }}</h2>
+        </div>
+        <span>LAT</span>
+    </div>
+
+    <div class="stat-card red">
+        <div>
+            <p>Absent</p>
+            <h2>{{ absent_count }}</h2>
+        </div>
+        <span>ABS</span>
+    </div>
+
+</section>
+
+<section class="table-card">
+    <div class="table-header">
+        <h3>Attendance Records</h3>
+        <p>Personal attendance history</p>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Clock In</th>
+                <th>Clock Out</th>
+                <th>Break</th>
+                <th>Total Hours</th>
+                <th>Status</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for record in attendance_records %}
+                <tr>
+                    <td>{{ record.date|date:"d M Y" }}</td>
+
+                    <td>
+                        {% if record.clock_in %}
+                            {{ record.clock_in|time:"H:i" }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if record.clock_out %}
+                            {{ record.clock_out|time:"H:i" }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if record.break_minutes %}
+                            {{ record.break_minutes }} min
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if record.total_hours %}
+                            {{ record.total_hours }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if record.status == "PRESENT" %}
+                            <span class="badge badge-success">Present</span>
+                        {% elif record.status == "LATE" %}
+                            <span class="badge badge-warning">Late</span>
+                        {% elif record.status == "ABSENT" %}
+                            <span class="badge badge-danger">Absent</span>
+                        {% else %}
+                            <span class="badge badge-muted">{{ record.get_status_display }}</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if record.notes %}
+                            {{ record.notes }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="7" class="empty-table">
+                        No attendance records found.
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+{% endblock %}

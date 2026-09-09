@@ -1,0 +1,132 @@
+{% extends 'employee_portal/base_employee.html' %}
+
+{% block title %}My Profile | HRHub Pro{% endblock %}
+
+{% block page_title %}My Profile{% endblock %}
+
+{% block page_subtitle %}
+Employment and contact details
+{% endblock %}
+
+{% block content %}
+
+<section class="profile-header-card">
+
+    <div class="profile-avatar-large">
+        {% if employee %}
+            {{ employee.first_name|slice:":1"|upper }}{{ employee.last_name|slice:":1"|upper }}
+        {% else %}
+            —
+        {% endif %}
+    </div>
+
+    <div>
+        <h2>
+            {% if employee %}
+                {{ employee.full_name }}
+            {% else %}
+                Employee profile unavailable
+            {% endif %}
+        </h2>
+
+        <p>
+            {% if employee %}
+                {{ employee.job_title }}
+            {% else %}
+                Profile not linked
+            {% endif %}
+        </p>
+    </div>
+
+</section>
+
+<section class="profile-grid">
+
+    <div class="panel">
+        <div class="panel-header">
+            <h3>Employment Details</h3>
+            <p>Current role and contract information</p>
+        </div>
+
+        <div class="overview-list">
+            <div>
+                <span>Employee Number</span>
+                <strong>{{ employee.employee_number }}</strong>
+            </div>
+
+            <div>
+                <span>Department</span>
+                <strong>
+                    {% if employee.department %}
+                        {{ employee.department.name }}
+                    {% else %}
+                        Not assigned
+                    {% endif %}
+                </strong>
+            </div>
+
+            <div>
+                <span>Job Title</span>
+                <strong>{{ employee.job_title }}</strong>
+            </div>
+
+            <div>
+                <span>Employment Type</span>
+                <strong>{{ employee.get_employment_type_display }}</strong>
+            </div>
+
+            <div>
+                <span>Hire Date</span>
+                <strong>{{ employee.hire_date|date:"d M Y" }}</strong>
+            </div>
+
+            <div>
+                <span>Status</span>
+                <strong>{{ employee.get_status_display }}</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header">
+            <h3>Update Contact Details</h3>
+            <p>Contact and emergency information</p>
+        </div>
+
+        <form method="post" class="standard-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Email</label>
+                {{ form.email }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.phone.id_for_label }}">Phone</label>
+                {{ form.phone }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.address.id_for_label }}">Address</label>
+                {{ form.address }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.emergency_contact_name.id_for_label }}">Emergency Contact</label>
+                {{ form.emergency_contact_name }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.emergency_contact_phone.id_for_label }}">Emergency Phone</label>
+                {{ form.emergency_contact_phone }}
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="primary-button">Save Changes</button>
+            </div>
+        </form>
+    </div>
+
+</section>
+
+{% endblock %}

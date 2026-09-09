@@ -1,0 +1,106 @@
+{% extends 'employee_portal/base_employee.html' %}
+
+{% block title %}My Leave | HRHub Pro{% endblock %}
+
+{% block page_title %}My Leave{% endblock %}
+
+{% block page_subtitle %}
+Holiday balance and leave requests
+{% endblock %}
+
+{% block content %}
+
+<section class="stats-grid">
+
+    <div class="stat-card blue">
+        <div>
+            <p>Entitlement</p>
+            <h2>{{ holiday_summary.holiday_entitlement }}</h2>
+        </div>
+        <span>ENT</span>
+    </div>
+
+    <div class="stat-card green">
+        <div>
+            <p>Remaining</p>
+            <h2>{{ holiday_summary.remaining_days }}</h2>
+        </div>
+        <span>REM</span>
+    </div>
+
+    <div class="stat-card orange">
+        <div>
+            <p>Pending</p>
+            <h2>{{ holiday_summary.pending_days }}</h2>
+        </div>
+        <span>PND</span>
+    </div>
+
+</section>
+
+<section class="page-actions">
+    <div></div>
+
+    <a href="{% url 'my_leave_create' %}" class="primary-button">
+        + Book Leave
+    </a>
+</section>
+
+<section class="table-card">
+    <div class="table-header">
+        <h3>My Leave Requests</h3>
+        <p>Holiday and absence records</p>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Duration</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Days</th>
+                <th>Status</th>
+                <th>Manager Message</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for leave_request in leave_requests %}
+                <tr>
+                    <td>{{ leave_request.get_leave_type_display }}</td>
+                    <td>{{ leave_request.get_duration_display }}</td>
+                    <td>{{ leave_request.start_date|date:"d M Y" }}</td>
+                    <td>{{ leave_request.end_date|date:"d M Y" }}</td>
+                    <td>{{ leave_request.total_days }}</td>
+
+                    <td>
+                        {% if leave_request.status == "APPROVED" %}
+                            <span class="badge badge-success">Approved</span>
+                        {% elif leave_request.status == "REJECTED" %}
+                            <span class="badge badge-danger">Rejected</span>
+                        {% else %}
+                            <span class="badge badge-warning">{{ leave_request.get_status_display }}</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if leave_request.manager_comment %}
+                            {{ leave_request.manager_comment }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="7" class="empty-table">
+                        No leave requests found.
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+{% endblock %}

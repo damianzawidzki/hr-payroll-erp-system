@@ -1,0 +1,169 @@
+{% extends 'employee_portal/base_employee.html' %}
+
+{% block title %}My Team | HRHub Pro{% endblock %}
+
+{% block page_title %}My Team{% endblock %}
+
+{% block page_subtitle %}
+Shift colleagues and leave overview
+{% endblock %}
+
+{% block content %}
+
+<section class="calendar-toolbar">
+    <div>
+        <h3>{{ month_name }} {{ selected_year }}</h3>
+        <p>People working with you and team leave</p>
+    </div>
+
+    <div class="calendar-actions">
+        <a
+            href="{% url 'my_shift_team' %}?month={{ previous_month }}&year={{ previous_year }}"
+            class="secondary-button"
+        >
+            Previous
+        </a>
+
+        <a
+            href="{% url 'my_shift_team' %}?month={{ next_month }}&year={{ next_year }}"
+            class="primary-button"
+        >
+            Next
+        </a>
+    </div>
+</section>
+
+<section class="calendar-legend">
+    <div>
+        <span class="legend-square approved-square"></span>
+        Approved leave
+    </div>
+
+    <div>
+        <span class="legend-square pending-square"></span>
+        Pending request
+    </div>
+
+    <div>
+        <span class="legend-square shift-square"></span>
+        Same shift
+    </div>
+</section>
+
+<section class="team-shift-list">
+
+    {% for row in team_rows %}
+        <div class="team-shift-card">
+            <div class="team-shift-header">
+                <div>
+                    <h3>
+                        {{ row.my_shift.shift_date|date:"d M Y" }}
+                        |
+                        {{ row.my_shift.get_shift_type_display }}
+                    </h3>
+
+                    <p>
+                        {{ row.my_shift.start_time|time:"H:i" }}
+                        -
+                        {{ row.my_shift.end_time|time:"H:i" }}
+
+                        {% if row.my_shift.location %}
+                            |
+                            {{ row.my_shift.location }}
+                        {% endif %}
+                    </p>
+                </div>
+
+                <span class="team-shift-badge">My Shift</span>
+            </div>
+
+            <div class="team-section">
+                <h4>Working on this shift</h4>
+
+                <div class="team-people-grid">
+                    {% for item in row.colleague_items %}
+                        <div class="team-person-card">
+                            <div class="team-person-avatar">
+                                {{ item.shift.employee.first_name|slice:":1"|upper }}{{ item.shift.employee.last_name|slice:":1"|upper }}
+                            </div>
+
+                            <div>
+                                <strong>{{ item.shift.employee.full_name }}</strong>
+                                <span>{{ item.shift.employee.employee_number }}</span>
+
+                                {% if item.shift.employee.department %}
+                                    <small>{{ item.shift.employee.department.name }}</small>
+                                {% endif %}
+
+                                <small>
+                                    {{ item.shift.start_time|time:"H:i" }}
+                                    -
+                                    {{ item.shift.end_time|time:"H:i" }}
+                                </small>
+
+                                {% if item.leave %}
+                                    {% if item.leave.status == "APPROVED" %}
+                                        <div class="small-leave-status approved-mini">
+                                            Approved Leave
+                                        </div>
+                                    {% elif item.leave.status == "PENDING" %}
+                                        <div class="small-leave-status pending-mini">
+                                            Pending Leave
+                                        </div>
+                                    {% elif item.leave.status == "REJECTED" %}
+                                        <div class="small-leave-status rejected-mini">
+                                            Rejected Leave
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="empty-team-box">
+                            No colleagues assigned to this shift.
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="team-section">
+                <h4>Team leave on this date</h4>
+
+                <div class="team-leave-grid">
+                    {% for leave_request in row.department_leave %}
+                        <div
+                            class="
+                                team-leave-card
+                                {% if leave_request.status == 'APPROVED' %}team-leave-approved{% endif %}
+                                {% if leave_request.status == 'PENDING' %}team-leave-pending{% endif %}
+                                {% if leave_request.status == 'REJECTED' %}team-leave-rejected{% endif %}
+                            "
+                        >
+                            <strong>{{ leave_request.employee.full_name }}</strong>
+                            <span>
+                                {{ leave_request.get_leave_type_display }}
+                                |
+                                {{ leave_request.get_duration_display }}
+                            </span>
+                            <small>{{ leave_request.get_status_display }}</small>
+                        </div>
+                    {% empty %}
+                        <div class="empty-team-box">
+                            No leave records for this date.
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <section class="form-card">
+            <div class="form-header">
+                <h3>No shifts found</h3>
+                <p>No shifts assigned for this month.</p>
+            </div>
+        </section>
+    {% endfor %}
+
+</section>
+
+{% endblock %}

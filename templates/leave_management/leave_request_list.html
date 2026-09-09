@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+
+{% block title %}Leave Requests | HRHub Pro{% endblock %}
+
+{% block page_title %}Leave Requests{% endblock %}
+
+{% block page_subtitle %}
+Absence requests and approval workflow
+{% endblock %}
+
+{% block content %}
+
+<section class="stats-grid">
+
+    <div class="stat-card orange">
+        <div>
+            <p>Pending</p>
+            <h2>{{ pending_count }}</h2>
+        </div>
+        <span>PND</span>
+    </div>
+
+    <div class="stat-card green">
+        <div>
+            <p>Approved</p>
+            <h2>{{ approved_count }}</h2>
+        </div>
+        <span>APP</span>
+    </div>
+
+    <div class="stat-card red">
+        <div>
+            <p>Rejected</p>
+            <h2>{{ rejected_count }}</h2>
+        </div>
+        <span>REJ</span>
+    </div>
+
+</section>
+
+<section class="page-actions">
+    <form method="get" class="filter-form">
+        <input
+            type="text"
+            name="search"
+            placeholder="Search employee..."
+            value="{{ search_query }}"
+            class="search-input"
+        >
+
+        <select name="status" class="filter-select">
+            <option value="">All Statuses</option>
+            <option value="PENDING" {% if status_filter == "PENDING" %}selected{% endif %}>Pending</option>
+            <option value="APPROVED" {% if status_filter == "APPROVED" %}selected{% endif %}>Approved</option>
+            <option value="REJECTED" {% if status_filter == "REJECTED" %}selected{% endif %}>Rejected</option>
+            <option value="CANCELLED" {% if status_filter == "CANCELLED" %}selected{% endif %}>Cancelled</option>
+        </select>
+
+        <button type="submit" class="primary-button">Filter</button>
+    </form>
+
+    <div class="page-action-buttons">
+    <a href="{% url 'leave_calendar' %}" class="secondary-button">
+        Calendar
+    </a>
+
+    <a href="{% url 'leave_request_create' %}" class="primary-button">
+        + Add Leave Request
+    </a>
+</div>
+</section>
+
+<section class="table-card">
+    <div class="table-header">
+        <h3>Leave Request Queue</h3>
+        <p>Employee holiday and absence approvals</p>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Type</th>
+                <th>Duration</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Days</th>
+                <th>Status</th>
+                <th>Manager Message</th>
+                <th>Decision</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for leave_request in leave_requests %}
+                <tr>
+                    <td>
+                        <strong>{{ leave_request.employee.full_name }}</strong>
+                        <br>
+                        <small>{{ leave_request.employee.employee_number }}</small>
+                    </td>
+
+                    <td>{{ leave_request.get_leave_type_display }}</td>
+
+                    <td>{{ leave_request.get_duration_display }}</td>
+
+                    <td>{{ leave_request.start_date|date:"d M Y" }}</td>
+
+                    <td>{{ leave_request.end_date|date:"d M Y" }}</td>
+
+                    <td>{{ leave_request.total_days }}</td>
+
+                    <td>
+                        {% if leave_request.status == "APPROVED" %}
+                            <span class="badge badge-success">Approved</span>
+                        {% elif leave_request.status == "REJECTED" %}
+                            <span class="badge badge-danger">Rejected</span>
+                        {% elif leave_request.status == "CANCELLED" %}
+                            <span class="badge badge-muted">Cancelled</span>
+                        {% else %}
+                            <span class="badge badge-warning">Pending</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if leave_request.manager_comment %}
+                            {{ leave_request.manager_comment }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if leave_request.status == "PENDING" %}
+                            <form
+                                method="post"
+                                action="{% url 'leave_request_approve' leave_request.id %}"
+                                class="decision-form"
+                            >
+                                {% csrf_token %}
+
+                                <textarea
+                                    name="manager_comment"
+                                    rows="2"
+                                    placeholder="Manager message"
+                                    class="decision-textarea"
+                                ></textarea>
+
+                                <button type="submit" class="approve-button">
+                                    Approve
+                                </button>
+                            </form>
+
+                            <form
+                                method="post"
+                                action="{% url 'leave_request_reject' leave_request.id %}"
+                                class="decision-form"
+                            >
+                                {% csrf_token %}
+
+                                <textarea
+                                    name="manager_comment"
+                                    rows="2"
+                                    placeholder="Manager message"
+                                    class="decision-textarea"
+                                ></textarea>
+
+                                <button type="submit" class="reject-button">
+                                    Reject
+                                </button>
+                            </form>
+                        {% else %}
+                            <span class="muted-text">Completed</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <div class="table-actions">
+                            <a href="{% url 'leave_request_update' leave_request.id %}" class="action-link">
+                                Edit
+                            </a>
+
+                            <a href="{% url 'leave_request_delete' leave_request.id %}" class="action-link danger-link">
+                                Delete
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="10" class="empty-table">
+                        No leave requests found.
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+{% endblock %}

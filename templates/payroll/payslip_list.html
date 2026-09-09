@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title %}Payroll | HRHub Pro{% endblock %}
+
+{% block page_title %}Payroll{% endblock %}
+
+{% block page_subtitle %}
+Payslip records and salary payments
+{% endblock %}
+
+{% block content %}
+
+<section class="stats-grid">
+
+    <div class="stat-card blue">
+        <div>
+            <p>Gross Pay</p>
+            <h2>£{{ total_gross }}</h2>
+        </div>
+        <span>GRS</span>
+    </div>
+
+    <div class="stat-card orange">
+        <div>
+            <p>Deductions</p>
+            <h2>£{{ total_deductions }}</h2>
+        </div>
+        <span>DED</span>
+    </div>
+
+    <div class="stat-card green">
+        <div>
+            <p>Net Pay</p>
+            <h2>£{{ total_net }}</h2>
+        </div>
+        <span>NET</span>
+    </div>
+
+</section>
+
+<section class="page-actions">
+    <form method="get" class="filter-form">
+        <input
+            type="text"
+            name="search"
+            placeholder="Search employee..."
+            value="{{ search_query }}"
+            class="search-input"
+        >
+
+        <select name="status" class="filter-select">
+            <option value="">All Statuses</option>
+            <option value="DRAFT" {% if status_filter == "DRAFT" %}selected{% endif %}>Draft</option>
+            <option value="ISSUED" {% if status_filter == "ISSUED" %}selected{% endif %}>Issued</option>
+            <option value="PAID" {% if status_filter == "PAID" %}selected{% endif %}>Paid</option>
+        </select>
+
+        <button type="submit" class="primary-button">Filter</button>
+    </form>
+
+    <a href="{% url 'payslip_create' %}" class="primary-button">
+        + Add Payslip
+    </a>
+</section>
+
+<section class="table-card">
+    <div class="table-header">
+        <h3>Payslip Records</h3>
+        <p>Employee salary documents</p>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Period</th>
+                <th>Payment Date</th>
+                <th>Gross</th>
+                <th>Deductions</th>
+                <th>Net</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for payslip in payslips %}
+                <tr>
+                    <td>
+                        <strong>{{ payslip.employee.full_name }}</strong>
+                        <br>
+                        <small>{{ payslip.employee.employee_number }}</small>
+                    </td>
+
+                    <td>
+                        {{ payslip.pay_period_start|date:"d M Y" }}
+                        -
+                        {{ payslip.pay_period_end|date:"d M Y" }}
+                    </td>
+
+                    <td>
+                        {% if payslip.payment_date %}
+                            {{ payslip.payment_date|date:"d M Y" }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+
+                    <td>£{{ payslip.gross_pay }}</td>
+                    <td>£{{ payslip.deductions }}</td>
+                    <td><strong>£{{ payslip.net_pay }}</strong></td>
+
+                    <td>
+                        {% if payslip.status == "PAID" %}
+                            <span class="badge badge-success">Paid</span>
+                        {% elif payslip.status == "ISSUED" %}
+                            <span class="badge badge-warning">Issued</span>
+                        {% else %}
+                            <span class="badge badge-muted">Draft</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <div class="table-actions">
+                            <a href="{% url 'payslip_update' payslip.id %}" class="action-link">
+                                Edit
+                            </a>
+
+                            <a href="{% url 'payslip_delete' payslip.id %}" class="action-link danger-link">
+                                Delete
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="8" class="empty-table">
+                        No payslips found.
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+{% endblock %}

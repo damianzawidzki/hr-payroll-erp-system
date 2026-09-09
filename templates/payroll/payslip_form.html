@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }} | HRHub Pro{% endblock %}
+
+{% block page_title %}{{ page_title }}{% endblock %}
+
+{% block page_subtitle %}
+Payslip details
+{% endblock %}
+
+{% block content %}
+
+<section class="form-card wide-form-card">
+    <div class="form-header">
+        <h3>{{ page_title }}</h3>
+        <p>Salary payment information</p>
+    </div>
+
+    <form method="post" class="standard-form">
+        {% csrf_token %}
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="{{ form.employee.id_for_label }}">Employee</label>
+                {{ form.employee }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.status.id_for_label }}">Status</label>
+                {{ form.status }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.pay_period_start.id_for_label }}">Period Start</label>
+                {{ form.pay_period_start }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.pay_period_end.id_for_label }}">Period End</label>
+                {{ form.pay_period_end }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.payment_date.id_for_label }}">Payment Date</label>
+                {{ form.payment_date }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.gross_pay.id_for_label }}">Gross Pay</label>
+                {{ form.gross_pay }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.deductions.id_for_label }}">Deductions</label>
+                {{ form.deductions }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.net_pay.id_for_label }}">Net Pay</label>
+                {{ form.net_pay }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.notes.id_for_label }}">Notes</label>
+            {{ form.notes }}
+        </div>
+
+        <div class="form-actions">
+            <a href="{% url 'payslip_list' %}" class="secondary-button">Cancel</a>
+            <button type="submit" class="primary-button">{{ button_text }}</button>
+        </div>
+    </form>
+</section>
+
+{% endblock %}

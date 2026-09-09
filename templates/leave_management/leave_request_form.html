@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }} | HRHub Pro{% endblock %}
+
+{% block page_title %}{{ page_title }}{% endblock %}
+
+{% block page_subtitle %}
+Leave request details
+{% endblock %}
+
+{% block content %}
+
+<section class="form-card wide-form-card">
+    <div class="form-header">
+        <h3>{{ page_title }}</h3>
+        <p>Employee absence information</p>
+    </div>
+
+    <form method="post" class="standard-form">
+        {% csrf_token %}
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="{{ form.employee.id_for_label }}">Employee</label>
+                {{ form.employee }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.leave_type.id_for_label }}">Leave Type</label>
+                {{ form.leave_type }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.duration.id_for_label }}">Duration</label>
+                {{ form.duration }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.status.id_for_label }}">Status</label>
+                {{ form.status }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.start_date.id_for_label }}">Start Date</label>
+                {{ form.start_date }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.end_date.id_for_label }}">End Date</label>
+                {{ form.end_date }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.reason.id_for_label }}">Reason</label>
+            {{ form.reason }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.manager_comment.id_for_label }}">Manager Message</label>
+            {{ form.manager_comment }}
+        </div>
+
+        <div class="form-actions">
+            <a href="{% url 'leave_request_list' %}" class="secondary-button">Cancel</a>
+            <button type="submit" class="primary-button">{{ button_text }}</button>
+        </div>
+    </form>
+</section>
+
+{% endblock %}
