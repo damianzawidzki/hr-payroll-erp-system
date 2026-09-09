@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'employee_portal',
     'shifts.apps.ShiftsConfig',
     'payroll',
+    'role_dashboards',
     'dashboard',
     'reports',
     'audit',

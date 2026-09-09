@@ -5,47 +5,22 @@
 {% block page_title %}Employees{% endblock %}
 
 {% block page_subtitle %}
-Employee records and employment details
+Employee records and management structure
 {% endblock %}
 
 {% block content %}
 
 <section class="page-actions">
-    <form method="get" class="search-form employee-search-form">
+    <form method="get" class="filter-form">
         <input
             type="text"
             name="search"
+            placeholder="Search employee..."
             value="{{ search_query }}"
-            placeholder="Search employees..."
+            class="search-input"
         >
 
-        <select name="department" class="filter-select">
-            <option value="">All Departments</option>
-
-            {% for department in departments %}
-                <option
-                    value="{{ department.id }}"
-                    {% if department_filter == department.id|stringformat:"s" %}selected{% endif %}
-                >
-                    {{ department.name }}
-                </option>
-            {% endfor %}
-        </select>
-
-        <select name="status" class="filter-select">
-            <option value="">All Statuses</option>
-
-            {% for value, label in status_choices %}
-                <option
-                    value="{{ value }}"
-                    {% if status_filter == value %}selected{% endif %}
-                >
-                    {{ label }}
-                </option>
-            {% endfor %}
-        </select>
-
-        <button type="submit">Filter</button>
+        <button type="submit" class="primary-button">Search</button>
     </form>
 
     <a href="{% url 'employee_create' %}" class="primary-button">
@@ -56,19 +31,19 @@ Employee records and employment details
 <section class="table-card">
     <div class="table-header">
         <h3>Employee Directory</h3>
-        <p>Company employee records</p>
+        <p>Workforce records</p>
     </div>
 
     <table class="data-table">
         <thead>
             <tr>
-                <th>Employee No.</th>
-                <th>Name</th>
-                <th>Email</th>
+                <th>Employee</th>
+                <th>Employee Number</th>
                 <th>Job Title</th>
                 <th>Department</th>
+                <th>Line Manager</th>
+                <th>Employment Type</th>
                 <th>Status</th>
-                <th>Salary</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -77,12 +52,12 @@ Employee records and employment details
             {% for employee in employees %}
                 <tr>
                     <td>
-                        <strong>{{ employee.employee_number }}</strong>
+                        <strong>{{ employee.full_name }}</strong>
+                        <br>
+                        <small>{{ employee.email }}</small>
                     </td>
 
-                    <td>{{ employee.full_name }}</td>
-
-                    <td>{{ employee.email }}</td>
+                    <td>{{ employee.employee_number }}</td>
 
                     <td>{{ employee.job_title }}</td>
 
@@ -90,26 +65,42 @@ Employee records and employment details
                         {% if employee.department %}
                             {{ employee.department.name }}
                         {% else %}
-                            Not assigned
+                            —
                         {% endif %}
                     </td>
 
                     <td>
-                        {% if employee.status == "ACTIVE" %}
-                            <span class="badge badge-success">Active</span>
-                        {% elif employee.status == "TERMINATED" %}
-                            <span class="badge badge-danger">Terminated</span>
+                        {% if employee.manager %}
+                            {{ employee.manager.full_name }}
                         {% else %}
-                            <span class="badge badge-warning">{{ employee.get_status_display }}</span>
+                            —
                         {% endif %}
                     </td>
 
-                    <td>£{{ employee.salary }}</td>
+                    <td>{{ employee.get_employment_type_display }}</td>
 
-                    <td class="table-actions">
-                        <a href="{% url 'employee_detail' employee.pk %}">View</a>
-                        <a href="{% url 'employee_update' employee.pk %}">Edit</a>
-                        <a href="{% url 'employee_delete' employee.pk %}" class="danger-link">Delete</a>
+                    <td>
+                        {% if employee.status == "ACTIVE" %}
+                            <span class="badge badge-success">Active</span>
+                        {% elif employee.status == "ON_LEAVE" %}
+                            <span class="badge badge-warning">On Leave</span>
+                        {% elif employee.status == "TERMINATED" %}
+                            <span class="badge badge-danger">Terminated</span>
+                        {% else %}
+                            <span class="badge badge-muted">{{ employee.get_status_display }}</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <div class="table-actions">
+                            <a href="{% url 'employee_update' employee.id %}" class="action-link">
+                                Edit
+                            </a>
+
+                            <a href="{% url 'employee_delete' employee.id %}" class="action-link danger-link">
+                                Delete
+                            </a>
+                        </div>
                     </td>
                 </tr>
             {% empty %}

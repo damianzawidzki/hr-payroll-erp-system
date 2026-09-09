@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}HR Dashboard | HRHub Pro{% endblock %}
+
+{% block page_title %}HR Dashboard{% endblock %}
+
+{% block page_subtitle %}
+Employees, attendance and payroll operations
+{% endblock %}
+
+{% block content %}
+
+<section class="stats-grid">
+
+    <div class="stat-card blue">
+        <div>
+            <p>Employees</p>
+            <h2>{{ total_employees }}</h2>
+        </div>
+        <span>EMP</span>
+    </div>
+
+    <div class="stat-card green">
+        <div>
+            <p>Attendance Today</p>
+            <h2>{{ attendance_today }}</h2>
+        </div>
+        <span>ATT</span>
+    </div>
+
+    <div class="stat-card orange">
+        <div>
+            <p>Pending Leave</p>
+            <h2>{{ pending_leave }}</h2>
+        </div>
+        <span>PND</span>
+    </div>
+
+    <div class="stat-card purple">
+        <div>
+            <p>Payroll Net</p>
+            <h2>£{{ payroll_total_net }}</h2>
+        </div>
+        <span>PAY</span>
+    </div>
+
+</section>
+
+<section class="admin-dashboard-grid">
+
+    <div class="panel dashboard-action-panel">
+        <div class="panel-header">
+            <h3>HR Operations</h3>
+            <p>Workforce, attendance and payroll</p>
+        </div>
+
+        <div class="quick-action-grid">
+            <a href="{% url 'employee_list' %}" class="quick-action-card">
+                <strong>Employees</strong>
+                <span>Add and update employees</span>
+            </a>
+
+            <a href="{% url 'attendance_list' %}" class="quick-action-card">
+                <strong>Attendance</strong>
+                <span>Enter working hours</span>
+            </a>
+
+            <a href="{% url 'payslip_list' %}" class="quick-action-card">
+                <strong>Payroll</strong>
+                <span>Create payslips</span>
+            </a>
+
+            <a href="{% url 'leave_request_list' %}" class="quick-action-card">
+                <strong>Leave Records</strong>
+                <span>Review leave and sickness</span>
+            </a>
+
+            <a href="{% url 'shift_calendar' %}" class="quick-action-card">
+                <strong>Shifts</strong>
+                <span>View rota</span>
+            </a>
+
+            <a href="{% url 'leave_calendar' %}" class="quick-action-card">
+                <strong>Leave Calendar</strong>
+                <span>View absence calendar</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header">
+            <h3>Today</h3>
+            <p>{{ today|date:"d M Y" }}</p>
+        </div>
+
+        <div class="overview-list">
+            <div>
+                <span>Employees</span>
+                <strong>{{ total_employees }}</strong>
+            </div>
+
+            <div>
+                <span>Absent Today</span>
+                <strong>{{ absent_today }}</strong>
+            </div>
+
+            <div>
+                <span>Payslips</span>
+                <strong>{{ payslip_count }}</strong>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+{% endblock %}

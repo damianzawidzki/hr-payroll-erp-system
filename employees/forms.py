@@ -1,7 +1,5 @@
 """
 Employee forms for HRHub Pro.
-
-This file contains forms used to create and update employee records.
 """
 
 from django import forms
@@ -28,6 +26,7 @@ class EmployeeForm(forms.ModelForm):
             "date_of_birth",
             "job_title",
             "department",
+            "manager",
             "employment_type",
             "hire_date",
             "salary",
@@ -38,45 +37,15 @@ class EmployeeForm(forms.ModelForm):
         ]
 
         widgets = {
-            "user": forms.Select(
-                attrs={
-                    "class": "form-control",
-                }
-            ),
-            "employee_number": forms.TextInput(
-                attrs={
-                    "class": "form-control",
-                    "placeholder": "EMP-001",
-                }
-            ),
-            "first_name": forms.TextInput(
-                attrs={
-                    "class": "form-control",
-                    "placeholder": "First name",
-                }
-            ),
-            "last_name": forms.TextInput(
-                attrs={
-                    "class": "form-control",
-                    "placeholder": "Last name",
-                }
-            ),
-            "email": forms.EmailInput(
-                attrs={
-                    "class": "form-control",
-                    "placeholder": "employee@company.com",
-                }
-            ),
-            "phone": forms.TextInput(
-                attrs={
-                    "class": "form-control",
-                    "placeholder": "Phone number",
-                }
-            ),
+            "user": forms.Select(attrs={"class": "form-control"}),
+            "employee_number": forms.TextInput(attrs={"class": "form-control"}),
+            "first_name": forms.TextInput(attrs={"class": "form-control"}),
+            "last_name": forms.TextInput(attrs={"class": "form-control"}),
+            "email": forms.EmailInput(attrs={"class": "form-control"}),
+            "phone": forms.TextInput(attrs={"class": "form-control"}),
             "address": forms.Textarea(
                 attrs={
                     "class": "form-control",
-                    "placeholder": "Employee address",
                     "rows": 3,
                 }
             ),
@@ -86,22 +55,10 @@ class EmployeeForm(forms.ModelForm):
                     "type": "date",
                 }
             ),
-            "job_title": forms.TextInput(
-                attrs={
-                    "class": "form-control",
-                    "placeholder": "Job title",
-                }
-            ),
-            "department": forms.Select(
-                attrs={
-                    "class": "form-control",
-                }
-            ),
-            "employment_type": forms.Select(
-                attrs={
-                    "class": "form-control",
-                }
-            ),
+            "job_title": forms.TextInput(attrs={"class": "form-control"}),
+            "department": forms.Select(attrs={"class": "form-control"}),
+            "manager": forms.Select(attrs={"class": "form-control"}),
+            "employment_type": forms.Select(attrs={"class": "form-control"}),
             "hire_date": forms.DateInput(
                 attrs={
                     "class": "form-control",
@@ -111,31 +68,15 @@ class EmployeeForm(forms.ModelForm):
             "salary": forms.NumberInput(
                 attrs={
                     "class": "form-control",
-                    "placeholder": "Monthly salary",
                     "step": "0.01",
                 }
             ),
-            "status": forms.Select(
-                attrs={
-                    "class": "form-control",
-                }
-            ),
-            "emergency_contact_name": forms.TextInput(
-                attrs={
-                    "class": "form-control",
-                    "placeholder": "Emergency contact name",
-                }
-            ),
-            "emergency_contact_phone": forms.TextInput(
-                attrs={
-                    "class": "form-control",
-                    "placeholder": "Emergency contact phone",
-                }
-            ),
+            "status": forms.Select(attrs={"class": "form-control"}),
+            "emergency_contact_name": forms.TextInput(attrs={"class": "form-control"}),
+            "emergency_contact_phone": forms.TextInput(attrs={"class": "form-control"}),
             "notes": forms.Textarea(
                 attrs={
                     "class": "form-control",
-                    "placeholder": "Internal notes",
                     "rows": 3,
                 }
             ),

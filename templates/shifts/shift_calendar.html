@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block title %}Shift Calendar | HRHub Pro{% endblock %}
+
+{% block page_title %}Shift Calendar{% endblock %}
+
+{% block page_subtitle %}
+Monthly work schedule overview
+{% endblock %}
+
+{% block content %}
+
+<section class="calendar-toolbar">
+    <div>
+        <h3>{{ month_name }} {{ selected_year }}</h3>
+        <p>Employee shift schedule</p>
+    </div>
+
+    <div class="calendar-actions">
+        <a
+            href="{% url 'shift_calendar' %}?month={{ previous_month }}&year={{ previous_year }}"
+            class="secondary-button"
+        >
+            Previous
+        </a>
+
+        <a href="{% url 'shift_list' %}" class="secondary-button">
+            Shift List
+        </a>
+
+        <a href="{% url 'shift_create' %}" class="primary-button">
+            + Add Shift
+        </a>
+
+        <a
+            href="{% url 'shift_calendar' %}?month={{ next_month }}&year={{ next_year }}"
+            class="primary-button"
+        >
+            Next
+        </a>
+    </div>
+</section>
+
+<section class="calendar-legend">
+    <div>
+        <span class="legend-square morning-square"></span>
+        Morning
+    </div>
+
+    <div>
+        <span class="legend-square afternoon-square"></span>
+        Afternoon
+    </div>
+
+    <div>
+        <span class="legend-square night-square"></span>
+        Night
+    </div>
+
+    <div>
+        <span class="legend-square custom-square"></span>
+        Custom
+    </div>
+</section>
+
+<section class="leave-calendar-card">
+    <div class="leave-calendar-scroll">
+        <table class="leave-calendar-table">
+            <thead>
+                <tr>
+                    <th class="employee-calendar-column">Employee</th>
+
+                    {% for day in calendar_days %}
+                        <th
+                            class="
+                                calendar-day-header
+                                {% if day.is_weekend %}weekend-day{% endif %}
+                                {% if day.is_today %}today-day{% endif %}
+                            "
+                        >
+                            <span>{{ day.day_number }}</span>
+                            <small>{{ day.day_name }}</small>
+                        </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for row in calendar_rows %}
+                    <tr>
+                        <td class="employee-calendar-cell">
+                            <strong>{{ row.employee.full_name }}</strong>
+                            <small>{{ row.employee.employee_number }}</small>
+
+                            {% if row.employee.department %}
+                                <small>{{ row.employee.department.name }}</small>
+                            {% endif %}
+                        </td>
+
+                        {% for cell in row.cells %}
+                            <td
+                                class="
+                                    calendar-cell
+                                    {% if cell.is_weekend %}weekend-cell{% endif %}
+                                    {% if cell.is_today %}today-cell{% endif %}
+                                "
+                            >
+                                {% for shift in cell.shifts %}
+                                    <div
+                                        class="
+                                            calendar-shift
+                                            {% if shift.shift_type == 'MORNING' %}morning-shift{% endif %}
+                                            {% if shift.shift_type == 'AFTERNOON' %}afternoon-shift{% endif %}
+                                            {% if shift.shift_type == 'NIGHT' %}night-shift{% endif %}
+                                            {% if shift.shift_type == 'CUSTOM' %}custom-shift{% endif %}
+                                        "
+                                    >
+                                        <strong>{{ shift.get_shift_type_display }}</strong>
+                                        <span>
+                                            {{ shift.start_time|time:"H:i" }}
+                                            -
+                                            {{ shift.end_time|time:"H:i" }}
+                                        </span>
+                                    </div>
+                                {% endfor %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="32" class="empty-table">
+                            No shifts found.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+{% endblock %}

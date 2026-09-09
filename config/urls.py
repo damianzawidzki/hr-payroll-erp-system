@@ -45,5 +45,7 @@ urlpatterns = [
     path("attendance/", include("attendance.urls")),
     path("leave-requests/", include("leave_management.urls")),
     path("shifts/", include("shifts.urls")),
+    path("payroll/", include("payroll.urls")),
+    path("role-dashboard/", include("role_dashboards.urls")),
     path("my-dashboard/", include("employee_portal.urls")),
 ]
