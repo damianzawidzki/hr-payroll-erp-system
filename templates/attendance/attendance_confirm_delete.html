@@ -10,25 +10,28 @@ Confirm attendance record deletion
 
 {% block content %}
 
-<section class="delete-card">
-    <h3>Delete attendance record</h3>
+<section class="form-card">
+    <div class="form-header">
+        <h3>Delete Attendance Record</h3>
+        <p>This action cannot be undone.</p>
+    </div>
 
-    <p>
-        You are about to delete attendance for
-        <strong>{{ attendance_record.employee.full_name }}</strong>
-        on
-        <strong>{{ attendance_record.date|date:"d M Y" }}</strong>.
-    </p>
+    <div class="delete-summary">
+        <p>
+            Are you sure you want to delete attendance for
+            <strong>{{ attendance.employee.full_name }}</strong>
+            on
+            <strong>{{ attendance.date|date:"d M Y" }}</strong>?
+        </p>
+    </div>
 
-    <p class="warning-text">
-        This action cannot be undone.
-    </p>
-
-    <form method="post" class="delete-actions">
+    <form method="post" class="standard-form">
         {% csrf_token %}
 
-        <a href="{% url 'attendance_list' %}" class="secondary-button">Cancel</a>
-        <button type="submit" class="danger-button">Delete Record</button>
+        <div class="form-actions">
+            <a href="{% url 'attendance_list' %}" class="secondary-button">Cancel</a>
+            <button type="submit" class="danger-button">Delete Attendance</button>
+        </div>
     </form>
 </section>
 

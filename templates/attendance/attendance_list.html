@@ -5,107 +5,167 @@
 {% block page_title %}Attendance{% endblock %}
 
 {% block page_subtitle %}
-Daily attendance records and working hours
+Daily employee attendance and working hours
 {% endblock %}
 
 {% block content %}
 
+<section class="stats-grid">
+
+    <div class="stat-card green">
+        <div>
+            <p>Present Today</p>
+            <h2>{{ present_today }}</h2>
+        </div>
+        <span>PRE</span>
+    </div>
+
+    <div class="stat-card orange">
+        <div>
+            <p>Late Today</p>
+            <h2>{{ late_today }}</h2>
+        </div>
+        <span>LAT</span>
+    </div>
+
+    <div class="stat-card red">
+        <div>
+            <p>Absent Today</p>
+            <h2>{{ absent_today }}</h2>
+        </div>
+        <span>ABS</span>
+    </div>
+
+    <div class="stat-card blue">
+        <div>
+            <p>Total Hours</p>
+            <h2>{{ total_hours }}</h2>
+        </div>
+        <span>HRS</span>
+    </div>
+
+</section>
+
 <section class="page-actions">
-    <form method="get" class="search-form employee-search-form">
+    <form method="get" class="filter-form">
         <input
             type="text"
             name="search"
-            value="{{ search_query }}"
             placeholder="Search employee..."
+            value="{{ search_query }}"
+            class="search-input"
+        >
+
+        <input
+            type="date"
+            name="date"
+            value="{{ date_filter }}"
+            class="filter-select"
         >
 
         <select name="status" class="filter-select">
             <option value="">All Statuses</option>
 
             {% for value, label in status_choices %}
-                <option
-                    value="{{ value }}"
-                    {% if status_filter == value %}selected{% endif %}
-                >
+                <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>
                     {{ label }}
                 </option>
             {% endfor %}
         </select>
 
-        <button type="submit">Filter</button>
+        <button type="submit" class="primary-button">Filter</button>
     </form>
 
-    <a href="{% url 'attendance_create' %}" class="primary-button">
-        + Add Record
-    </a>
+    <div class="page-action-buttons">
+        <a href="{% url 'generate_attendance' %}" class="secondary-button">
+            Generate from Shifts
+        </a>
+
+        <a href="{% url 'attendance_create' %}" class="primary-button">
+            + Add Attendance
+        </a>
+    </div>
 </section>
 
 <section class="table-card">
     <div class="table-header">
         <h3>Attendance Records</h3>
-        <p>Employee attendance history</p>
+        <p>Daily working time and absence status</p>
     </div>
 
     <table class="data-table">
         <thead>
             <tr>
-                <th>Date</th>
                 <th>Employee</th>
-                <th>Department</th>
-                <th>Check In</th>
-                <th>Check Out</th>
-                <th>Status</th>
+                <th>Date</th>
+                <th>Clock In</th>
+                <th>Clock Out</th>
+                <th>Break</th>
                 <th>Total Hours</th>
+                <th>Status</th>
                 <th>Actions</th>
             </tr>
         </thead>
 
         <tbody>
-            {% for record in attendance_records %}
+            {% for attendance in attendance_records %}
                 <tr>
-                    <td>{{ record.date|date:"d M Y" }}</td>
-
-                    <td>{{ record.employee.full_name }}</td>
-
                     <td>
-                        {% if record.employee.department %}
-                            {{ record.employee.department.name }}
-                        {% else %}
-                            Not assigned
-                        {% endif %}
+                        <strong>{{ attendance.employee.full_name }}</strong>
+                        <br>
+                        <small>{{ attendance.employee.employee_number }}</small>
                     </td>
 
+                    <td>{{ attendance.date|date:"d M Y" }}</td>
+
                     <td>
-                        {% if record.check_in_time %}
-                            {{ record.check_in_time|time:"H:i" }}
+                        {% if attendance.clock_in %}
+                            {{ attendance.clock_in|time:"H:i" }}
                         {% else %}
                             —
                         {% endif %}
                     </td>
 
                     <td>
-                        {% if record.check_out_time %}
-                            {{ record.check_out_time|time:"H:i" }}
+                        {% if attendance.clock_out %}
+                            {{ attendance.clock_out|time:"H:i" }}
                         {% else %}
                             —
                         {% endif %}
                     </td>
 
+                    <td>{{ attendance.break_minutes }} min</td>
+
                     <td>
-                        {% if record.status == "PRESENT" %}
+                        <strong>{{ attendance.total_hours }}</strong>
+                    </td>
+
+                    <td>
+                        {% if attendance.status == "PRESENT" %}
                             <span class="badge badge-success">Present</span>
-                        {% elif record.status == "ABSENT" %}
+                        {% elif attendance.status == "LATE" %}
+                            <span class="badge badge-warning">Late</span>
+                        {% elif attendance.status == "ABSENT" %}
                             <span class="badge badge-danger">Absent</span>
+                        {% elif attendance.status == "SICK" %}
+                            <span class="badge badge-muted">Sick</span>
+                        {% elif attendance.status == "HOLIDAY" %}
+                            <span class="badge badge-info">Holiday</span>
                         {% else %}
-                            <span class="badge badge-warning">{{ record.get_status_display }}</span>
+                            <span class="badge badge-muted">{{ attendance.get_status_display }}</span>
                         {% endif %}
                     </td>
 
-                    <td>{{ record.total_hours }}</td>
+                    <td>
+                        <div class="table-actions">
+                            <a href="{% url 'attendance_update' attendance.id %}" class="action-link">
+                                Edit
+                            </a>
 
-                    <td class="table-actions">
-                        <a href="{% url 'attendance_update' record.pk %}">Edit</a>
-                        <a href="{% url 'attendance_delete' record.pk %}" class="danger-link">Delete</a>
+                            <a href="{% url 'attendance_delete' attendance.id %}" class="action-link danger-link">
+                                Delete
+                            </a>
+                        </div>
                     </td>
                 </tr>
             {% empty %}

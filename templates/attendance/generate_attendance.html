@@ -1,19 +1,19 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ page_title }} | HRHub Pro{% endblock %}
+{% block title %}Generate Attendance | HRHub Pro{% endblock %}
 
-{% block page_title %}{{ page_title }}{% endblock %}
+{% block page_title %}Generate Attendance{% endblock %}
 
 {% block page_subtitle %}
-Employee daily attendance record
+Create attendance records from scheduled shifts
 {% endblock %}
 
 {% block content %}
 
 <section class="form-card wide-form-card">
     <div class="form-header">
-        <h3>{{ page_title }}</h3>
-        <p>Clock times, status and working hours</p>
+        <h3>Generate Attendance from Shifts</h3>
+        <p>Select employees and date range to create attendance records automatically</p>
     </div>
 
     <form method="post" class="standard-form">
@@ -27,33 +27,21 @@ Employee daily attendance record
 
         <div class="form-grid">
             <div class="form-group">
-                <label for="{{ form.employee.id_for_label }}">Employee</label>
-                {{ form.employee }}
-                {{ form.employee.errors }}
+                <label for="{{ form.start_date.id_for_label }}">Start Date</label>
+                {{ form.start_date }}
+                {{ form.start_date.errors }}
             </div>
 
             <div class="form-group">
-                <label for="{{ form.date.id_for_label }}">Date</label>
-                {{ form.date }}
-                {{ form.date.errors }}
+                <label for="{{ form.end_date.id_for_label }}">End Date</label>
+                {{ form.end_date }}
+                {{ form.end_date.errors }}
             </div>
 
             <div class="form-group">
-                <label for="{{ form.status.id_for_label }}">Status</label>
+                <label for="{{ form.status.id_for_label }}">Default Status</label>
                 {{ form.status }}
                 {{ form.status.errors }}
-            </div>
-
-            <div class="form-group">
-                <label for="{{ form.clock_in.id_for_label }}">Clock In</label>
-                {{ form.clock_in }}
-                {{ form.clock_in.errors }}
-            </div>
-
-            <div class="form-group">
-                <label for="{{ form.clock_out.id_for_label }}">Clock Out</label>
-                {{ form.clock_out }}
-                {{ form.clock_out.errors }}
             </div>
 
             <div class="form-group">
@@ -64,6 +52,23 @@ Employee daily attendance record
         </div>
 
         <div class="form-group">
+            <label>Employees</label>
+
+            <div class="checkbox-panel">
+                {{ form.employees }}
+            </div>
+
+            {{ form.employees.errors }}
+        </div>
+
+        <div class="form-group checkbox-single-row">
+            {{ form.overwrite_existing }}
+            <label for="{{ form.overwrite_existing.id_for_label }}">
+                Update existing attendance if it already exists
+            </label>
+        </div>
+
+        <div class="form-group">
             <label for="{{ form.notes.id_for_label }}">Notes</label>
             {{ form.notes }}
             {{ form.notes.errors }}
@@ -71,7 +76,7 @@ Employee daily attendance record
 
         <div class="form-actions">
             <a href="{% url 'attendance_list' %}" class="secondary-button">Cancel</a>
-            <button type="submit" class="primary-button">{{ button_text }}</button>
+            <button type="submit" class="primary-button">Generate Attendance</button>
         </div>
     </form>
 </section>

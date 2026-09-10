@@ -16,30 +16,33 @@ class AttendanceAdmin(admin.ModelAdmin):
     list_display = (
         "employee",
         "date",
-        "check_in_time",
-        "check_out_time",
-        "status",
+        "clock_in",
+        "clock_out",
+        "break_minutes",
         "total_hours",
+        "status",
     )
 
     list_filter = (
         "status",
         "date",
+        "employee__department",
     )
 
     search_fields = (
-        "employee__employee_number",
         "employee__first_name",
         "employee__last_name",
-        "employee__email",
+        "employee__employee_number",
     )
 
     ordering = (
         "-date",
+        "employee__first_name",
         "employee__last_name",
     )
 
     readonly_fields = (
+        "total_hours",
         "created_at",
         "updated_at",
     )
