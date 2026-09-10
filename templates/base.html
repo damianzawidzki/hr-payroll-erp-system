@@ -9,7 +9,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=100">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=120">
 </head>
 <body>
 
@@ -26,10 +26,10 @@
             <div>
                 <h2>HRHub Pro</h2>
 
-                {% if is_hr_user %}
-                    <p>HR Panel</p>
-                {% elif is_manager_user %}
+                {% if is_manager_user %}
                     <p>Manager Panel</p>
+                {% elif is_hr_user %}
+                    <p>HR Panel</p>
                 {% else %}
                     <p>Admin Panel</p>
                 {% endif %}
@@ -41,18 +41,17 @@
             {% if is_manager_user %}
                 <a href="{% url 'manager_dashboard' %}" class="nav-link">Manager Dashboard</a>
                 <a href="{% url 'employee_list' %}" class="nav-link">My Team</a>
-                <a href="{% url 'shift_calendar' %}" class="nav-link">Team Shifts</a>
+                <a href="{% url 'leave_calendar' %}" class="nav-link">Team Calendar</a>
                 <a href="{% url 'attendance_list' %}" class="nav-link">Team Attendance</a>
                 <a href="{% url 'leave_request_list' %}" class="nav-link">Leave Requests</a>
-                <a href="{% url 'leave_calendar' %}" class="nav-link">Leave Calendar</a>
+                <a href="{% url 'my_payslips' %}" class="nav-link">My Payslips</a>
 
             {% elif is_hr_user %}
                 <a href="{% url 'hr_dashboard' %}" class="nav-link">HR Dashboard</a>
                 <a href="{% url 'employee_list' %}" class="nav-link">Employees</a>
+                <a href="{% url 'leave_calendar' %}" class="nav-link">Team Calendar</a>
                 <a href="{% url 'attendance_list' %}" class="nav-link">Attendance</a>
                 <a href="{% url 'leave_request_list' %}" class="nav-link">Leave Records</a>
-                <a href="{% url 'leave_calendar' %}" class="nav-link">Leave Calendar</a>
-                <a href="{% url 'shift_calendar' %}" class="nav-link">Shifts</a>
                 <a href="{% url 'payslip_list' %}" class="nav-link">Payroll</a>
                 <a href="#" class="nav-link">Reports</a>
 
@@ -60,10 +59,9 @@
                 <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
                 <a href="{% url 'employee_list' %}" class="nav-link">Employees</a>
                 <a href="{% url 'department_list' %}" class="nav-link">Departments</a>
+                <a href="{% url 'leave_calendar' %}" class="nav-link">Team Calendar</a>
                 <a href="{% url 'attendance_list' %}" class="nav-link">Attendance</a>
                 <a href="{% url 'leave_request_list' %}" class="nav-link">Leave Requests</a>
-                <a href="{% url 'leave_calendar' %}" class="nav-link">Leave Calendar</a>
-                <a href="{% url 'shift_calendar' %}" class="nav-link">Shifts</a>
                 <a href="{% url 'payslip_list' %}" class="nav-link">Payroll</a>
                 <a href="#" class="nav-link">Reports</a>
                 <a href="#" class="nav-link">Audit Logs</a>

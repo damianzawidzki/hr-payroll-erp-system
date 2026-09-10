@@ -10,14 +10,16 @@ from .models import Payslip
 @admin.register(Payslip)
 class PayslipAdmin(admin.ModelAdmin):
     """
-    Admin configuration for payslip records.
+    Admin configuration for weekly payslip records.
     """
 
     list_display = (
         "employee",
-        "pay_period_start",
-        "pay_period_end",
+        "week_start",
+        "week_end",
         "payment_date",
+        "hours_worked",
+        "overtime_hours",
         "gross_pay",
         "deductions",
         "net_pay",
@@ -27,7 +29,8 @@ class PayslipAdmin(admin.ModelAdmin):
     list_filter = (
         "status",
         "payment_date",
-        "pay_period_end",
+        "week_start",
+        "week_end",
     )
 
     search_fields = (
@@ -37,5 +40,12 @@ class PayslipAdmin(admin.ModelAdmin):
     )
 
     ordering = (
-        "-pay_period_end",
+        "-week_start",
+    )
+
+    readonly_fields = (
+        "gross_pay",
+        "net_pay",
+        "created_at",
+        "updated_at",
     )

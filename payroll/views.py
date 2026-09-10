@@ -11,30 +11,41 @@ from .forms import PayslipForm
 from .models import Payslip
 
 
-def user_can_manage_payroll(user):
+def get_user_role(user):
     """
-    Check whether the logged-in user can manage payroll.
+    Return the role assigned to the logged-in user.
     """
-
-    if user.is_superuser or user.is_staff:
-        return True
 
     profile = getattr(user, "profile", None)
 
-    if profile and profile.role in ["ADMIN", "MANAGER"]:
+    if profile:
+        return profile.role
+
+    return None
+
+
+def user_can_manage_payroll(user):
+    """
+    Allow only Admin and HR users to manage payroll.
+    """
+
+    if user.is_superuser:
         return True
 
-    return False
+    role = get_user_role(user)
+
+    return role in ["ADMIN", "HR"]
 
 
 @login_required
 def payslip_list(request):
     """
-    Display payslips for HR users.
+    Display weekly payslips for Admin and HR users.
     """
 
     if not user_can_manage_payroll(request.user):
-        return redirect("employee_self_dashboard")
+        messages.error(request, "You do not have permission to access payroll.")
+        return redirect("role_redirect")
 
     search_query = request.GET.get("search", "")
     status_filter = request.GET.get("status", "")
@@ -59,7 +70,7 @@ def payslip_list(request):
     total_net = payslips.aggregate(total=Sum("net_pay"))["total"] or 0
 
     context = {
-        "payslips": payslips.order_by("-pay_period_end"),
+        "payslips": payslips.order_by("-week_start"),
         "search_query": search_query,
         "status_filter": status_filter,
         "total_gross": total_gross,
@@ -73,11 +84,12 @@ def payslip_list(request):
 @login_required
 def payslip_create(request):
     """
-    Create a payslip.
+    Create a weekly payslip.
     """
 
     if not user_can_manage_payroll(request.user):
-        return redirect("employee_self_dashboard")
+        messages.error(request, "You do not have permission to create payslips.")
+        return redirect("role_redirect")
 
     if request.method == "POST":
         form = PayslipForm(request.POST)
@@ -91,7 +103,7 @@ def payslip_create(request):
 
     context = {
         "form": form,
-        "page_title": "Add Payslip",
+        "page_title": "Add Weekly Payslip",
         "button_text": "Create Payslip",
     }
 
@@ -101,11 +113,12 @@ def payslip_create(request):
 @login_required
 def payslip_update(request, pk):
     """
-    Update a payslip.
+    Update a weekly payslip.
     """
 
     if not user_can_manage_payroll(request.user):
-        return redirect("employee_self_dashboard")
+        messages.error(request, "You do not have permission to update payslips.")
+        return redirect("role_redirect")
 
     payslip = get_object_or_404(Payslip, pk=pk)
 
@@ -122,7 +135,7 @@ def payslip_update(request, pk):
     context = {
         "form": form,
         "payslip": payslip,
-        "page_title": "Edit Payslip",
+        "page_title": "Edit Weekly Payslip",
         "button_text": "Save Changes",
     }
 
@@ -132,11 +145,12 @@ def payslip_update(request, pk):
 @login_required
 def payslip_delete(request, pk):
     """
-    Delete a payslip.
+    Delete a weekly payslip.
     """
 
     if not user_can_manage_payroll(request.user):
-        return redirect("employee_self_dashboard")
+        messages.error(request, "You do not have permission to delete payslips.")
+        return redirect("role_redirect")
 
     payslip = get_object_or_404(Payslip, pk=pk)
 

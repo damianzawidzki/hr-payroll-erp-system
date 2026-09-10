@@ -5,7 +5,7 @@
 {% block page_title %}{{ page_title }}{% endblock %}
 
 {% block page_subtitle %}
-Payslip details
+Weekly payroll calculation
 {% endblock %}
 
 {% block content %}
@@ -13,7 +13,7 @@ Payslip details
 <section class="form-card wide-form-card">
     <div class="form-header">
         <h3>{{ page_title }}</h3>
-        <p>Salary payment information</p>
+        <p>Weekly pay, overtime and deductions</p>
     </div>
 
     <form method="post" class="standard-form">
@@ -31,13 +31,13 @@ Payslip details
             </div>
 
             <div class="form-group">
-                <label for="{{ form.pay_period_start.id_for_label }}">Period Start</label>
-                {{ form.pay_period_start }}
+                <label for="{{ form.week_start.id_for_label }}">Week Start</label>
+                {{ form.week_start }}
             </div>
 
             <div class="form-group">
-                <label for="{{ form.pay_period_end.id_for_label }}">Period End</label>
-                {{ form.pay_period_end }}
+                <label for="{{ form.week_end.id_for_label }}">Week End</label>
+                {{ form.week_end }}
             </div>
 
             <div class="form-group">
@@ -46,18 +46,33 @@ Payslip details
             </div>
 
             <div class="form-group">
-                <label for="{{ form.gross_pay.id_for_label }}">Gross Pay</label>
-                {{ form.gross_pay }}
+                <label for="{{ form.hourly_rate.id_for_label }}">Hourly Rate</label>
+                {{ form.hourly_rate }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.hours_worked.id_for_label }}">Hours Worked</label>
+                {{ form.hours_worked }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.overtime_hours.id_for_label }}">Overtime Hours</label>
+                {{ form.overtime_hours }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.overtime_rate.id_for_label }}">Overtime Rate</label>
+                {{ form.overtime_rate }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.bonus.id_for_label }}">Bonus</label>
+                {{ form.bonus }}
             </div>
 
             <div class="form-group">
                 <label for="{{ form.deductions.id_for_label }}">Deductions</label>
                 {{ form.deductions }}
-            </div>
-
-            <div class="form-group">
-                <label for="{{ form.net_pay.id_for_label }}">Net Pay</label>
-                {{ form.net_pay }}
             </div>
         </div>
 

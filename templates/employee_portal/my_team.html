@@ -1,11 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'employee_portal/base_employee.html' %}
 
-{% block title %}Team Calendar | HRHub Pro{% endblock %}
+{% block title %}My Team | HRHub Pro{% endblock %}
 
-{% block page_title %}Team Calendar{% endblock %}
+{% block page_title %}My Team{% endblock %}
 
 {% block page_subtitle %}
-Shifts, approved leave and pending leave requests
+Read-only team calendar
 {% endblock %}
 
 {% block content %}
@@ -13,31 +13,19 @@ Shifts, approved leave and pending leave requests
 <section class="calendar-toolbar">
     <div>
         <h3>{{ month_name }} {{ selected_year }}</h3>
-        <p>Team rota and absence overview</p>
+        <p>Team shifts, approved leave and pending requests</p>
     </div>
 
     <div class="calendar-actions">
         <a
-            href="{% url 'leave_calendar' %}?month={{ previous_month }}&year={{ previous_year }}"
+            href="{% url 'my_shift_team' %}?month={{ previous_month }}&year={{ previous_year }}"
             class="secondary-button"
         >
             Previous
         </a>
 
-        <a href="{% url 'shift_create' %}" class="primary-button">
-            + Add Shift
-        </a>
-
-        <a href="{% url 'bulk_shift_create' %}" class="primary-button">
-            Bulk Add Shifts
-        </a>
-
-        <a href="{% url 'leave_request_create' %}" class="primary-button">
-            + Add Leave
-        </a>
-
         <a
-            href="{% url 'leave_calendar' %}?month={{ next_month }}&year={{ next_year }}"
+            href="{% url 'my_shift_team' %}?month={{ next_month }}&year={{ next_year }}"
             class="primary-button"
         >
             Next
@@ -101,7 +89,7 @@ Shifts, approved leave and pending leave requests
 
             <tbody>
                 {% for row in calendar_rows %}
-                    <tr>
+                    <tr class="{% if row.is_logged_employee %}logged-employee-row{% endif %}">
                         <td class="employee-calendar-cell">
                             <strong>
                                 {{ row.employee.full_name }}
@@ -115,6 +103,10 @@ Shifts, approved leave and pending leave requests
 
                             {% if row.employee.department %}
                                 <small>{{ row.employee.department.name }}</small>
+                            {% endif %}
+
+                            {% if row.is_logged_employee %}
+                                <small class="current-user-label">You</small>
                             {% endif %}
                         </td>
 

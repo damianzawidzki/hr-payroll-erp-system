@@ -5,7 +5,7 @@
 {% block page_title %}My Payslips{% endblock %}
 
 {% block page_subtitle %}
-Salary payment records
+Weekly salary payment records
 {% endblock %}
 
 {% block content %}
@@ -40,20 +40,21 @@ Salary payment records
 
 <section class="table-card">
     <div class="table-header">
-        <h3>Payslips</h3>
+        <h3>My Weekly Payslips</h3>
         <p>Issued salary documents</p>
     </div>
 
     <table class="data-table">
         <thead>
             <tr>
-                <th>Period</th>
+                <th>Week</th>
                 <th>Payment Date</th>
+                <th>Hours</th>
+                <th>Overtime</th>
                 <th>Gross</th>
                 <th>Deductions</th>
                 <th>Net</th>
                 <th>Status</th>
-                <th>Notes</th>
             </tr>
         </thead>
 
@@ -61,9 +62,9 @@ Salary payment records
             {% for payslip in payslips %}
                 <tr>
                     <td>
-                        {{ payslip.pay_period_start|date:"d M Y" }}
+                        {{ payslip.week_start|date:"d M Y" }}
                         -
-                        {{ payslip.pay_period_end|date:"d M Y" }}
+                        {{ payslip.week_end|date:"d M Y" }}
                     </td>
 
                     <td>
@@ -72,6 +73,18 @@ Salary payment records
                         {% else %}
                             —
                         {% endif %}
+                    </td>
+
+                    <td>
+                        {{ payslip.hours_worked }} hrs
+                        <br>
+                        <small>£{{ payslip.hourly_rate }}/h</small>
+                    </td>
+
+                    <td>
+                        {{ payslip.overtime_hours }} hrs
+                        <br>
+                        <small>£{{ payslip.overtime_rate }}/h</small>
                     </td>
 
                     <td>£{{ payslip.gross_pay }}</td>
@@ -87,18 +100,10 @@ Salary payment records
                             <span class="badge badge-muted">{{ payslip.get_status_display }}</span>
                         {% endif %}
                     </td>
-
-                    <td>
-                        {% if payslip.notes %}
-                            {{ payslip.notes }}
-                        {% else %}
-                            —
-                        {% endif %}
-                    </td>
                 </tr>
             {% empty %}
                 <tr>
-                    <td colspan="7" class="empty-table">
+                    <td colspan="8" class="empty-table">
                         No payslips found.
                     </td>
                 </tr>

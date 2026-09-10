@@ -9,7 +9,7 @@ from .models import Payslip
 
 class PayslipForm(forms.ModelForm):
     """
-    Form used by HR users to create and update payslips.
+    Form used by HR users to create and update weekly payslips.
     """
 
     class Meta:
@@ -17,25 +17,28 @@ class PayslipForm(forms.ModelForm):
 
         fields = [
             "employee",
-            "pay_period_start",
-            "pay_period_end",
+            "week_start",
+            "week_end",
             "payment_date",
-            "gross_pay",
+            "hourly_rate",
+            "hours_worked",
+            "overtime_hours",
+            "overtime_rate",
+            "bonus",
             "deductions",
-            "net_pay",
             "status",
             "notes",
         ]
 
         widgets = {
             "employee": forms.Select(attrs={"class": "form-control"}),
-            "pay_period_start": forms.DateInput(
+            "week_start": forms.DateInput(
                 attrs={
                     "class": "form-control",
                     "type": "date",
                 }
             ),
-            "pay_period_end": forms.DateInput(
+            "week_end": forms.DateInput(
                 attrs={
                     "class": "form-control",
                     "type": "date",
@@ -47,22 +50,46 @@ class PayslipForm(forms.ModelForm):
                     "type": "date",
                 }
             ),
-            "gross_pay": forms.NumberInput(
+            "hourly_rate": forms.NumberInput(
                 attrs={
                     "class": "form-control",
                     "step": "0.01",
+                    "placeholder": "Hourly rate",
+                }
+            ),
+            "hours_worked": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "step": "0.01",
+                    "placeholder": "Standard hours",
+                }
+            ),
+            "overtime_hours": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "step": "0.01",
+                    "placeholder": "Overtime hours",
+                }
+            ),
+            "overtime_rate": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "step": "0.01",
+                    "placeholder": "Overtime rate",
+                }
+            ),
+            "bonus": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "step": "0.01",
+                    "placeholder": "Bonus",
                 }
             ),
             "deductions": forms.NumberInput(
                 attrs={
                     "class": "form-control",
                     "step": "0.01",
-                }
-            ),
-            "net_pay": forms.NumberInput(
-                attrs={
-                    "class": "form-control",
-                    "step": "0.01",
+                    "placeholder": "Deductions",
                 }
             ),
             "status": forms.Select(attrs={"class": "form-control"}),

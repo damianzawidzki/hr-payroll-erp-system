@@ -3,9 +3,10 @@ Employee portal views for HRHub Pro.
 """
 
 from calendar import month_name, monthrange
-from datetime import date
+from datetime import date, timedelta
 from decimal import Decimal
 
+from django.db.models import Case, IntegerField, Q, Value, When
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -355,130 +356,153 @@ def my_shifts(request):
 @login_required
 def my_shift_team(request):
     """
-    Display colleagues from the logged-in employee shifts and their leave status.
+    Display a read-only team calendar for employees.
     """
 
     employee = get_logged_employee(request.user)
 
     if not employee:
         messages.error(request, "Employee profile is not linked.")
-        return redirect("employee_self_dashboard")
+        return redirect("role_redirect")
 
-    today = timezone.localdate()
+    today = date.today()
 
-    selected_year = int(request.GET.get("year", today.year))
     selected_month = int(request.GET.get("month", today.month))
+    selected_year = int(request.GET.get("year", today.year))
 
-    if selected_month < 1:
-        selected_month = 12
-        selected_year -= 1
-
-    if selected_month > 12:
-        selected_month = 1
-        selected_year += 1
-
-    first_day = date(selected_year, selected_month, 1)
-    last_day_number = monthrange(selected_year, selected_month)[1]
-    last_day = date(selected_year, selected_month, last_day_number)
-
-    previous_month = selected_month - 1
-    previous_year = selected_year
-
-    if previous_month < 1:
+    if selected_month == 1:
         previous_month = 12
-        previous_year -= 1
+        previous_year = selected_year - 1
+    else:
+        previous_month = selected_month - 1
+        previous_year = selected_year
 
-    next_month = selected_month + 1
-    next_year = selected_year
-
-    if next_month > 12:
+    if selected_month == 12:
         next_month = 1
-        next_year += 1
+        next_year = selected_year + 1
+    else:
+        next_month = selected_month + 1
+        next_year = selected_year
 
-    my_month_shifts = Shift.objects.filter(
-        employee=employee,
-        shift_date__gte=first_day,
-        shift_date__lte=last_day,
-    ).exclude(
-        status="CANCELLED",
-    ).order_by("shift_date", "start_time")
+    days_in_month = monthrange(selected_year, selected_month)[1]
 
-    team_rows = []
+    calendar_days = []
 
-    for my_shift in my_month_shifts:
-        colleagues = Shift.objects.select_related(
-            "employee",
-            "employee__department",
-        ).filter(
-            shift_date=my_shift.shift_date,
-            shift_type=my_shift.shift_type,
-        ).exclude(
-            employee=employee,
-        ).exclude(
-            status="CANCELLED",
+    for day_number in range(1, days_in_month + 1):
+        current_day = date(selected_year, selected_month, day_number)
+
+        calendar_days.append(
+            {
+                "date": current_day,
+                "day_number": day_number,
+                "day_name": current_day.strftime("%a"),
+                "is_weekend": current_day.weekday() >= 5,
+                "is_today": current_day == today,
+            }
         )
 
-        if my_shift.location:
-            colleagues = colleagues.filter(
-                Q(location=my_shift.location) | Q(location__isnull=True) | Q(location="")
-            )
+    employees = Employee.objects.select_related(
+        "department",
+        "manager",
+        "user",
+        "user__profile",
+    ).annotate(
+        role_order=Case(
+            When(user__profile__role="MANAGER", then=Value(0)),
+            default=Value(1),
+            output_field=IntegerField(),
+        )
+    ).order_by(
+        "role_order",
+        "first_name",
+        "last_name",
+    )
 
-        colleague_items = []
+    month_start = date(selected_year, selected_month, 1)
+    month_end = date(selected_year, selected_month, days_in_month)
 
-        for colleague_shift in colleagues:
-            colleague_leave = LeaveRequest.objects.filter(
-                employee=colleague_shift.employee,
-                start_date__lte=my_shift.shift_date,
-                end_date__gte=my_shift.shift_date,
-            ).exclude(
-                status="CANCELLED",
-            ).order_by("-created_at").first()
+    shifts = Shift.objects.select_related(
+        "employee",
+    ).filter(
+        employee__in=employees,
+        shift_date__gte=month_start,
+        shift_date__lte=month_end,
+    ).exclude(
+        status="CANCELLED",
+    )
 
-            colleague_items.append(
+    leave_requests = LeaveRequest.objects.select_related(
+        "employee",
+    ).filter(
+        employee__in=employees,
+        start_date__lte=month_end,
+        end_date__gte=month_start,
+    ).exclude(
+        status="CANCELLED",
+    )
+
+    shift_map = {}
+    leave_map = {}
+
+    for shift in shifts:
+        key = (shift.employee_id, shift.shift_date)
+        shift_map.setdefault(key, []).append(shift)
+
+    for leave_request in leave_requests:
+        current_day = max(leave_request.start_date, month_start)
+        final_day = min(leave_request.end_date, month_end)
+
+        while current_day <= final_day:
+            key = (leave_request.employee_id, current_day)
+            leave_map.setdefault(key, []).append(leave_request)
+            current_day += timedelta(days=1)
+
+    calendar_rows = []
+
+    for team_employee in employees:
+        cells = []
+
+        for day in calendar_days:
+            key = (team_employee.id, day["date"])
+
+            cells.append(
                 {
-                    "shift": colleague_shift,
-                    "leave": colleague_leave,
+                    "date": day["date"],
+                    "is_weekend": day["is_weekend"],
+                    "is_today": day["is_today"],
+                    "shifts": shift_map.get(key, []),
+                    "leave_requests": leave_map.get(key, []),
                 }
             )
 
-        department_leave = LeaveRequest.objects.select_related(
-            "employee",
-            "employee__department",
-        ).filter(
-            start_date__lte=my_shift.shift_date,
-            end_date__gte=my_shift.shift_date,
-        ).exclude(
-            employee=employee,
-        ).exclude(
-            status="CANCELLED",
-        )
-
-        if employee.department:
-            department_leave = department_leave.filter(
-                employee__department=employee.department,
-            )
-
-        team_rows.append(
+        calendar_rows.append(
             {
-                "my_shift": my_shift,
-                "colleague_items": colleague_items,
-                "department_leave": department_leave,
+                "employee": team_employee,
+                "is_logged_employee": team_employee.id == employee.id,
+                "is_manager": getattr(
+                    getattr(team_employee.user, "profile", None),
+                    "role",
+                    None,
+                )
+                == "MANAGER",
+                "cells": cells,
             }
         )
 
     context = {
         "employee": employee,
-        "team_rows": team_rows,
-        "month_name": month_name[selected_month],
         "selected_month": selected_month,
         "selected_year": selected_year,
+        "month_name": month_name[selected_month],
         "previous_month": previous_month,
         "previous_year": previous_year,
         "next_month": next_month,
         "next_year": next_year,
+        "calendar_days": calendar_days,
+        "calendar_rows": calendar_rows,
     }
 
-    return render(request, "employee_portal/my_shift_team.html", context)
+    return render(request, "employee_portal/my_team.html", context)
 
 @login_required
 def my_attendance(request):
@@ -527,6 +551,37 @@ def my_payslips(request):
     ).exclude(
         status="DRAFT",
     ).order_by("-pay_period_end")
+
+    total_gross = sum((payslip.gross_pay for payslip in payslips), 0)
+    total_deductions = sum((payslip.deductions for payslip in payslips), 0)
+    total_net = sum((payslip.net_pay for payslip in payslips), 0)
+
+    context = {
+        "employee": employee,
+        "payslips": payslips,
+        "total_gross": total_gross,
+        "total_deductions": total_deductions,
+        "total_net": total_net,
+    }
+
+    return render(request, "employee_portal/my_payslips.html", context)
+@login_required
+def my_payslips(request):
+    """
+    Display issued weekly payslips for the logged-in employee.
+    """
+
+    employee = get_logged_employee(request.user)
+
+    if not employee:
+        messages.error(request, "Employee profile is not linked.")
+        return redirect("role_redirect")
+
+    payslips = Payslip.objects.filter(
+        employee=employee,
+    ).exclude(
+        status="DRAFT",
+    ).order_by("-week_start")
 
     total_gross = sum((payslip.gross_pay for payslip in payslips), 0)
     total_deductions = sum((payslip.deductions for payslip in payslips), 0)

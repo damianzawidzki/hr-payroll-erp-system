@@ -5,7 +5,7 @@
 {% block page_title %}Payroll{% endblock %}
 
 {% block page_subtitle %}
-Payslip records and salary payments
+Weekly payslip records and salary payments
 {% endblock %}
 
 {% block content %}
@@ -59,22 +59,23 @@ Payslip records and salary payments
     </form>
 
     <a href="{% url 'payslip_create' %}" class="primary-button">
-        + Add Payslip
+        + Add Weekly Payslip
     </a>
 </section>
 
 <section class="table-card">
     <div class="table-header">
-        <h3>Payslip Records</h3>
-        <p>Employee salary documents</p>
+        <h3>Weekly Payslips</h3>
+        <p>Payroll records created by HR</p>
     </div>
 
     <table class="data-table">
         <thead>
             <tr>
                 <th>Employee</th>
-                <th>Period</th>
-                <th>Payment Date</th>
+                <th>Week</th>
+                <th>Hours</th>
+                <th>Overtime</th>
                 <th>Gross</th>
                 <th>Deductions</th>
                 <th>Net</th>
@@ -93,17 +94,23 @@ Payslip records and salary payments
                     </td>
 
                     <td>
-                        {{ payslip.pay_period_start|date:"d M Y" }}
+                        {{ payslip.week_start|date:"d M Y" }}
                         -
-                        {{ payslip.pay_period_end|date:"d M Y" }}
+                        {{ payslip.week_end|date:"d M Y" }}
                     </td>
 
                     <td>
-                        {% if payslip.payment_date %}
-                            {{ payslip.payment_date|date:"d M Y" }}
-                        {% else %}
-                            —
-                        {% endif %}
+                        {{ payslip.hours_worked }}
+                        hrs
+                        <br>
+                        <small>£{{ payslip.hourly_rate }}/h</small>
+                    </td>
+
+                    <td>
+                        {{ payslip.overtime_hours }}
+                        hrs
+                        <br>
+                        <small>£{{ payslip.overtime_rate }}/h</small>
                     </td>
 
                     <td>£{{ payslip.gross_pay }}</td>
@@ -134,7 +141,7 @@ Payslip records and salary payments
                 </tr>
             {% empty %}
                 <tr>
-                    <td colspan="8" class="empty-table">
+                    <td colspan="9" class="empty-table">
                         No payslips found.
                     </td>
                 </tr>

@@ -1912,3 +1912,173 @@ body {
     font-size: 11px;
     font-weight: 800;
 }
+/* Bulk shift form */
+
+.checkbox-panel {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 14px;
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.checkbox-panel ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.checkbox-panel li {
+    margin-bottom: 10px;
+}
+
+.checkbox-panel label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    color: #374151;
+}
+
+.checkbox-panel input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+}
+
+.compact-checkbox-panel ul {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px 14px;
+}
+
+.checkbox-single-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.checkbox-single-row input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+}
+
+.form-errors,
+.errorlist {
+    color: #b91c1c;
+    font-size: 13px;
+    font-weight: 700;
+}
+/* Combined team calendar */
+
+.team-calendar-table .calendar-cell {
+    min-width: 95px;
+    vertical-align: top;
+}
+
+.calendar-leave {
+    margin-top: 4px;
+    border-radius: 8px;
+    padding: 6px 4px;
+    font-size: 10px;
+    font-weight: 800;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    color: #111827;
+}
+
+.calendar-leave strong {
+    font-size: 10px;
+}
+
+.calendar-leave span {
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.approved-leave {
+    background: #fef3c7;
+    border-left: 3px solid #d97706;
+}
+
+.pending-leave {
+    background: repeating-linear-gradient(
+        45deg,
+        #dbeafe,
+        #dbeafe 6px,
+        #fef3c7 6px,
+        #fef3c7 12px
+    );
+    border-left: 3px solid #2563eb;
+}
+
+.rejected-leave {
+    background: #fee2e2;
+    border-left: 3px solid #dc2626;
+}
+
+.approved-leave-square {
+    background: #fef3c7;
+    border: 1px solid #d97706;
+}
+
+.pending-leave-square {
+    background: repeating-linear-gradient(
+        45deg,
+        #dbeafe,
+        #dbeafe 6px,
+        #fef3c7 6px,
+        #fef3c7 12px
+    );
+    border: 1px solid #2563eb;
+}
+
+.rejected-leave-square {
+    background: #fee2e2;
+    border: 1px solid #dc2626;
+}
+/* Employee read-only team calendar */
+
+.small-role-pill {
+    display: inline-flex;
+    margin-left: 6px;
+    padding: 3px 7px;
+    border-radius: 999px;
+    background: #111827;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.current-user-label {
+    display: inline-flex;
+    margin-top: 4px;
+    color: #2563eb;
+    font-weight: 800;
+}
+
+.logged-employee-row .employee-calendar-cell {
+    background: #eff6ff;
+}
+
+.employee-portal-layout .calendar-actions a {
+    pointer-events: auto;
+}
+/* Calendar employee role labels */
+
+.small-role-pill {
+    display: inline-flex;
+    margin-left: 6px;
+    padding: 3px 7px;
+    border-radius: 999px;
+    background: #111827;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.team-calendar-table .employee-calendar-column,
+.team-calendar-table .employee-calendar-cell {
+    min-width: 230px;
+}
