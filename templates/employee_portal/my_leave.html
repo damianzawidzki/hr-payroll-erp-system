@@ -1,0 +1,139 @@
+{% extends 'employee_portal/base_employee.html' %}
+
+{% block title %}My Leave | HRHub Pro{% endblock %}
+
+{% block page_title %}My Leave{% endblock %}
+
+{% block page_subtitle %}
+Holiday, sickness and leave request history
+{% endblock %}
+
+{% block content %}
+
+<section class="stats-grid">
+
+    <div class="stat-card blue">
+        <div>
+            <p>Total Entitlement</p>
+            <h2>{{ holiday_summary.annual_entitlement }}</h2>
+        </div>
+        <span>ENT</span>
+    </div>
+
+    <div class="stat-card orange">
+        <div>
+            <p>Pending Holiday</p>
+            <h2>{{ holiday_summary.pending_days }}</h2>
+        </div>
+        <span>PND</span>
+    </div>
+
+    <div class="stat-card green">
+        <div>
+            <p>Remaining</p>
+            <h2>{{ holiday_summary.remaining_days }}</h2>
+        </div>
+        <span>REM</span>
+    </div>
+
+    <div class="stat-card purple">
+        <div>
+            <p>Used Holiday</p>
+            <h2>{{ holiday_summary.used_days }}</h2>
+        </div>
+        <span>USD</span>
+    </div>
+
+</section>
+
+<section class="page-actions">
+    <div>
+        <h3>Leave Requests</h3>
+        <p>Submitted leave, holiday and sickness records</p>
+    </div>
+
+    <a href="{% url 'my_leave_create' %}" class="primary-button">
+        + Book Leave
+    </a>
+</section>
+
+<section class="table-card">
+    <div class="table-header">
+        <h3>My Leave Records</h3>
+        <p>Your leave requests and manager decisions</p>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Leave Type</th>
+                <th>Dates</th>
+                <th>Duration</th>
+                <th>Total Days</th>
+                <th>Status</th>
+                <th>Reason</th>
+                <th>Manager Message</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for leave_request in leave_requests %}
+                <tr>
+                    <td>
+                        <strong>{{ leave_request.get_leave_type_display }}</strong>
+                    </td>
+
+                    <td>
+                        {{ leave_request.start_date|date:"d M Y" }}
+                        -
+                        {{ leave_request.end_date|date:"d M Y" }}
+                    </td>
+
+                    <td>{{ leave_request.get_duration_display }}</td>
+
+                    <td>
+                        <strong>{{ leave_request.total_days }}</strong>
+                    </td>
+
+                    <td>
+                        {% if leave_request.status == "APPROVED" %}
+                            <span class="badge badge-success">Approved</span>
+                        {% elif leave_request.status == "PENDING" %}
+                            <span class="badge badge-warning">Pending</span>
+                        {% elif leave_request.status == "REJECTED" %}
+                            <span class="badge badge-danger">Rejected</span>
+                        {% elif leave_request.status == "CANCELLED" %}
+                            <span class="badge badge-muted">Cancelled</span>
+                        {% else %}
+                            <span class="badge badge-muted">{{ leave_request.get_status_display }}</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if leave_request.reason %}
+                            {{ leave_request.reason }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if leave_request.manager_comment %}
+                            {{ leave_request.manager_comment }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="7" class="empty-table">
+                        No leave requests found.
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+{% endblock %}

@@ -5,152 +5,135 @@
 {% block page_title %}Employee Details{% endblock %}
 
 {% block page_subtitle %}
-Employee profile and employment record
+Employee profile and employment information
 {% endblock %}
 
 {% block content %}
 
-<section class="detail-card wide-form-card">
-    <div class="detail-header">
-        <div>
-            <h3>{{ employee.full_name }}</h3>
-            <p>{{ employee.employee_number }}</p>
-        </div>
-
-        <div class="detail-actions">
-            <a href="{% url 'employee_update' employee.pk %}" class="primary-button">Edit</a>
-            <a href="{% url 'employee_list' %}" class="secondary-button">Back</a>
-        </div>
+<section class="form-card wide-form-card">
+    <div class="form-header">
+        <h3>{{ employee.full_name }}</h3>
+        <p>{{ employee.employee_number }} | {{ employee.job_title }}</p>
     </div>
 
-    <div class="detail-grid">
-        <div class="detail-item">
-            <span>Employee Number</span>
-            <strong>{{ employee.employee_number }}</strong>
-        </div>
-
-        <div class="detail-item">
-            <span>Status</span>
-            <strong>{{ employee.get_status_display }}</strong>
-        </div>
-
-        <div class="detail-item">
+    <div class="profile-summary-list">
+        <div>
             <span>Full Name</span>
             <strong>{{ employee.full_name }}</strong>
         </div>
 
-        <div class="detail-item">
+        <div>
+            <span>Employee Number</span>
+            <strong>{{ employee.employee_number }}</strong>
+        </div>
+
+        <div>
             <span>Email</span>
             <strong>{{ employee.email }}</strong>
         </div>
 
-        <div class="detail-item">
+        <div>
             <span>Phone</span>
             <strong>
                 {% if employee.phone %}
                     {{ employee.phone }}
                 {% else %}
-                    Not provided
+                    —
                 {% endif %}
             </strong>
         </div>
 
-        <div class="detail-item">
-            <span>Date of Birth</span>
-            <strong>
-                {% if employee.date_of_birth %}
-                    {{ employee.date_of_birth|date:"d M Y" }}
-                {% else %}
-                    Not provided
-                {% endif %}
-            </strong>
-        </div>
-
-        <div class="detail-item">
+        <div>
             <span>Job Title</span>
             <strong>{{ employee.job_title }}</strong>
         </div>
 
-        <div class="detail-item">
+        <div>
             <span>Department</span>
             <strong>
                 {% if employee.department %}
                     {{ employee.department.name }}
                 {% else %}
-                    Not assigned
+                    —
                 {% endif %}
             </strong>
         </div>
 
-        <div class="detail-item">
+        <div>
+            <span>Line Manager</span>
+            <strong>
+                {% if employee.manager %}
+                    {{ employee.manager.full_name }}
+                {% else %}
+                    —
+                {% endif %}
+            </strong>
+        </div>
+
+        <div>
             <span>Employment Type</span>
             <strong>{{ employee.get_employment_type_display }}</strong>
         </div>
 
-        <div class="detail-item">
+        <div>
             <span>Hire Date</span>
             <strong>{{ employee.hire_date|date:"d M Y" }}</strong>
         </div>
 
-        <div class="detail-item">
-            <span>Monthly Salary</span>
-            <strong>£{{ employee.salary }}</strong>
+        <div>
+            <span>Status</span>
+            <strong>{{ employee.get_status_display }}</strong>
         </div>
 
-        <div class="detail-item">
-            <span>System User</span>
-            <strong>
-                {% if employee.user %}
-                    {{ employee.user.username }}
-                {% else %}
-                    Not linked
-                {% endif %}
-            </strong>
-        </div>
-
-        <div class="detail-item">
+        <div>
             <span>Emergency Contact</span>
             <strong>
                 {% if employee.emergency_contact_name %}
                     {{ employee.emergency_contact_name }}
                 {% else %}
-                    Not provided
+                    —
                 {% endif %}
             </strong>
         </div>
 
-        <div class="detail-item">
+        <div>
             <span>Emergency Phone</span>
             <strong>
                 {% if employee.emergency_contact_phone %}
                     {{ employee.emergency_contact_phone }}
                 {% else %}
-                    Not provided
+                    —
                 {% endif %}
             </strong>
         </div>
+    </div>
 
-        <div class="detail-item full-width">
-            <span>Address</span>
-            <strong>
-                {% if employee.address %}
-                    {{ employee.address }}
-                {% else %}
-                    Not provided
-                {% endif %}
-            </strong>
+    {% if employee.address %}
+        <div class="form-group">
+            <label>Address</label>
+            <div class="readonly-box">
+                {{ employee.address }}
+            </div>
         </div>
+    {% endif %}
 
-        <div class="detail-item full-width">
-            <span>Notes</span>
-            <strong>
-                {% if employee.notes %}
-                    {{ employee.notes }}
-                {% else %}
-                    No notes
-                {% endif %}
-            </strong>
+    {% if employee.notes %}
+        <div class="form-group">
+            <label>Notes</label>
+            <div class="readonly-box">
+                {{ employee.notes }}
+            </div>
         </div>
+    {% endif %}
+
+    <div class="form-actions">
+        <a href="{% url 'employee_list' %}" class="secondary-button">Back</a>
+
+        {% if can_edit_employees %}
+            <a href="{% url 'employee_update' employee.id %}" class="primary-button">
+                Edit Employee
+            </a>
+        {% endif %}
     </div>
 </section>
 

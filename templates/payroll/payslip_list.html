@@ -15,7 +15,7 @@ Weekly payslip records and salary payments
     <div class="stat-card blue">
         <div>
             <p>Gross Pay</p>
-            <h2>£{{ total_gross }}</h2>
+            <h2>£{{ total_gross|floatformat:2 }}</h2>
         </div>
         <span>GRS</span>
     </div>
@@ -23,7 +23,7 @@ Weekly payslip records and salary payments
     <div class="stat-card orange">
         <div>
             <p>Deductions</p>
-            <h2>£{{ total_deductions }}</h2>
+            <h2>£{{ total_deductions|floatformat:2 }}</h2>
         </div>
         <span>DED</span>
     </div>
@@ -31,7 +31,7 @@ Weekly payslip records and salary payments
     <div class="stat-card green">
         <div>
             <p>Net Pay</p>
-            <h2>£{{ total_net }}</h2>
+            <h2>£{{ total_net|floatformat:2 }}</h2>
         </div>
         <span>NET</span>
     </div>
@@ -58,9 +58,15 @@ Weekly payslip records and salary payments
         <button type="submit" class="primary-button">Filter</button>
     </form>
 
-    <a href="{% url 'payslip_create' %}" class="primary-button">
-        + Add Weekly Payslip
-    </a>
+    <div class="page-action-buttons">
+        <a href="{% url 'generate_weekly_payslips' %}" class="secondary-button">
+            Generate Weekly Payslips
+        </a>
+
+        <a href="{% url 'payslip_create' %}" class="primary-button">
+            + Add Weekly Payslip
+        </a>
+    </div>
 </section>
 
 <section class="table-card">
@@ -75,11 +81,13 @@ Weekly payslip records and salary payments
                 <th>Employee</th>
                 <th>Week</th>
                 <th>Hours</th>
-                <th>Overtime</th>
                 <th>Gross</th>
+                <th>PAYE</th>
+                <th>NI</th>
                 <th>Deductions</th>
                 <th>Net</th>
                 <th>Status</th>
+                <th>Documents</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -100,22 +108,16 @@ Weekly payslip records and salary payments
                     </td>
 
                     <td>
-                        {{ payslip.hours_worked }}
-                        hrs
+                        {{ payslip.hours_worked|floatformat:2 }} hrs
                         <br>
-                        <small>£{{ payslip.hourly_rate }}/h</small>
+                        <small>OT: {{ payslip.overtime_hours|floatformat:2 }} hrs</small>
                     </td>
 
-                    <td>
-                        {{ payslip.overtime_hours }}
-                        hrs
-                        <br>
-                        <small>£{{ payslip.overtime_rate }}/h</small>
-                    </td>
-
-                    <td>£{{ payslip.gross_pay }}</td>
-                    <td>£{{ payslip.deductions }}</td>
-                    <td><strong>£{{ payslip.net_pay }}</strong></td>
+                    <td>£{{ payslip.gross_pay|floatformat:2 }}</td>
+                    <td>£{{ payslip.paye_tax|floatformat:2 }}</td>
+                    <td>£{{ payslip.national_insurance|floatformat:2 }}</td>
+                    <td>£{{ payslip.total_deductions|floatformat:2 }}</td>
+                    <td><strong>£{{ payslip.net_pay|floatformat:2 }}</strong></td>
 
                     <td>
                         {% if payslip.status == "PAID" %}
@@ -125,6 +127,18 @@ Weekly payslip records and salary payments
                         {% else %}
                             <span class="badge badge-muted">Draft</span>
                         {% endif %}
+                    </td>
+
+                    <td>
+                        <div class="table-actions">
+                            <a href="{% url 'payslip_pdf_preview' payslip.id %}" class="action-link" target="_blank">
+                                Preview
+                            </a>
+
+                            <a href="{% url 'payslip_pdf_download' payslip.id %}" class="action-link">
+                                Download
+                            </a>
+                        </div>
                     </td>
 
                     <td>
@@ -141,7 +155,7 @@ Weekly payslip records and salary payments
                 </tr>
             {% empty %}
                 <tr>
-                    <td colspan="9" class="empty-table">
+                    <td colspan="11" class="empty-table">
                         No payslips found.
                     </td>
                 </tr>

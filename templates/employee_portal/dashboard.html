@@ -10,54 +10,55 @@ My leave, sickness and work summary
 
 {% block content %}
 
-<section class="employee-top-grid">
+<section class="employee-dashboard-grid">
 
-    <div class="holiday-circle-card">
-        <div class="holiday-circle-header">
+    <div class="employee-card annual-leave-card">
+        <div class="employee-card-header">
             <h3>Annual Leave</h3>
-            <p>{{ holiday_summary.holiday_entitlement }} days total entitlement</p>
+            <p>{{ holiday_summary.annual_entitlement }} days total entitlement</p>
         </div>
 
-        <div class="holiday-circle-area">
-            <div
-                class="holiday-circle"
-                style="
-                    --used-percent: {{ holiday_summary.used_percent }}%;
-                    --pending-end-percent: {{ holiday_summary.pending_end_percent }}%;
-                "
-            >
-                <div class="holiday-circle-centre">
-                    <strong>{{ holiday_summary.remaining_days }}</strong>
-                    <span>days left</span>
-                </div>
+        <div
+            class="leave-donut"
+            style="
+                --used-percent: {{ holiday_summary.used_percent|default:0 }}%;
+                --pending-percent: {{ holiday_summary.pending_percent|default:0 }}%;
+            "
+        >
+            <div class="leave-donut-inner">
+                <strong>{{ holiday_summary.remaining_days }}</strong>
+                <span>days left</span>
             </div>
         </div>
 
-        <div class="holiday-legend">
-            <div class="holiday-legend-box">
-                <small>Used</small>
-                <strong class="blue-text">{{ holiday_summary.used_days }} days</strong>
+        <div class="leave-donut-legend">
+            <div>
+                <span class="legend-dot used-dot"></span>
+                <p>Used</p>
+                <strong>{{ holiday_summary.used_days }} days</strong>
             </div>
 
-            <div class="holiday-legend-box">
-                <small>Pending</small>
-                <strong class="yellow-text">{{ holiday_summary.pending_days }} days</strong>
+            <div>
+                <span class="legend-dot pending-dot"></span>
+                <p>Pending</p>
+                <strong>{{ holiday_summary.pending_days }} days</strong>
             </div>
 
-            <div class="holiday-legend-box">
-                <small>Remaining</small>
-                <strong class="green-text">{{ holiday_summary.remaining_days }} days</strong>
+            <div>
+                <span class="legend-dot remaining-dot"></span>
+                <p>Remaining</p>
+                <strong>{{ holiday_summary.remaining_days }} days</strong>
             </div>
         </div>
     </div>
 
-    <div class="employee-summary-card">
-        <div class="panel-header">
+    <div class="employee-card">
+        <div class="employee-card-header">
             <h3>Employee Summary</h3>
             <p>Leave and sickness overview</p>
         </div>
 
-        <div class="summary-grid">
+        <div class="employee-summary-grid">
             <div class="summary-box">
                 <span>Pending Holiday</span>
                 <strong>{{ holiday_summary.pending_days }}</strong>
@@ -65,12 +66,12 @@ My leave, sickness and work summary
 
             <div class="summary-box">
                 <span>Sick Records</span>
-                <strong>{{ holiday_summary.sick_records }}</strong>
+                <strong>{{ sick_records_count }}</strong>
             </div>
 
             <div class="summary-box">
                 <span>Sick Days</span>
-                <strong>{{ holiday_summary.sick_days }}</strong>
+                <strong>{{ sick_days }}</strong>
             </div>
 
             <div class="summary-box">
@@ -85,86 +86,60 @@ My leave, sickness and work summary
 
             <div class="summary-box">
                 <span>Total Entitlement</span>
-                <strong>{{ holiday_summary.holiday_entitlement }}</strong>
+                <strong>{{ holiday_summary.annual_entitlement }}</strong>
             </div>
         </div>
 
-        <div class="form-actions">
+        <div class="employee-action-row">
             <a href="{% url 'my_leave_create' %}" class="primary-button">Book Leave</a>
             <a href="{% url 'my_leave_list' %}" class="secondary-button">View Requests</a>
         </div>
     </div>
 
-</section>
-
-<section class="dashboard-grid">
-
-    <div class="panel">
-        <div class="panel-header">
+    <div class="employee-card">
+        <div class="employee-card-header">
             <h3>My Profile</h3>
             <p>Employment details</p>
         </div>
 
-        <div class="overview-list">
+        <div class="profile-summary-list">
             <div>
                 <span>Name</span>
-                <strong>
-                    {% if employee %}
-                        {{ employee.full_name }}
-                    {% else %}
-                        Not linked
-                    {% endif %}
-                </strong>
+                <strong>{{ employee.full_name }}</strong>
             </div>
 
             <div>
                 <span>Employee Number</span>
-                <strong>
-                    {% if employee %}
-                        {{ employee.employee_number }}
-                    {% else %}
-                        Not linked
-                    {% endif %}
-                </strong>
+                <strong>{{ employee.employee_number }}</strong>
             </div>
 
             <div>
                 <span>Department</span>
                 <strong>
-                    {% if employee %}
-                        {% if employee.department %}
-                            {{ employee.department.name }}
-                        {% else %}
-                            Not assigned
-                        {% endif %}
+                    {% if employee.department %}
+                        {{ employee.department.name }}
                     {% else %}
-                        Not linked
+                        Not assigned
                     {% endif %}
                 </strong>
             </div>
 
             <div>
                 <span>Job Title</span>
-                <strong>
-                    {% if employee %}
-                        {{ employee.job_title }}
-                    {% else %}
-                        Not linked
-                    {% endif %}
-                </strong>
+                <strong>{{ employee.job_title }}</strong>
             </div>
         </div>
     </div>
 
-    <div class="panel">
-        <div class="panel-header">
+    <div class="employee-card">
+        <div class="employee-card-header">
             <h3>Recent Requests</h3>
             <p>Latest leave activity</p>
         </div>
 
         <div class="module-list">
-            {% for leave_request in latest_leave_requests %}
-                <div class="module-item active-module">
+            {% for leave_request in pending_leave_requests %}
+                <div class="module-item">
                     <strong>
                         {{ leave_request.get_leave_type_display }}
                         |
@@ -175,13 +150,7 @@ My leave, sickness and work summary
                         {{ leave_request.start_date|date:"d M Y" }}
                         -
                         {{ leave_request.end_date|date:"d M Y" }}
-                        |
-                        {{ leave_request.get_status_display }}
                     </span>
-
-                    {% if leave_request.manager_comment %}
-                        <span>{{ leave_request.manager_comment }}</span>
-                    {% endif %}
                 </div>
             {% empty %}
                 <div class="module-item">

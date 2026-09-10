@@ -33,38 +33,61 @@ Monthly work schedule
     </div>
 </section>
 
-<section class="employee-month-calendar">
+<section class="table-card">
+    <div class="table-header">
+        <h3>Scheduled Shifts</h3>
+        <p>Your work schedule for this month</p>
+    </div>
 
-    {% for cell in calendar_cells %}
-        <div
-            class="
-                employee-calendar-day
-                {% if cell.is_weekend %}employee-weekend-day{% endif %}
-                {% if cell.is_today %}employee-today-day{% endif %}
-            "
-        >
-            <div class="employee-calendar-day-header">
-                <strong>{{ cell.day_number }}</strong>
-                <span>{{ cell.day_name }}</span>
-            </div>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Shift Type</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Location</th>
+                <th>Status</th>
+            </tr>
+        </thead>
 
-            <div class="employee-shift-list">
-                {% for shift in cell.shifts %}
-                    <div class="employee-shift-card">
+        <tbody>
+            {% for shift in shifts %}
+                <tr>
+                    <td>{{ shift.shift_date|date:"d M Y" }}</td>
+                    <td>
                         <strong>{{ shift.get_shift_type_display }}</strong>
-                        <span>{{ shift.start_time|time:"H:i" }} - {{ shift.end_time|time:"H:i" }}</span>
-
+                    </td>
+                    <td>{{ shift.start_time|time:"H:i" }}</td>
+                    <td>{{ shift.end_time|time:"H:i" }}</td>
+                    <td>
                         {% if shift.location %}
-                            <small>{{ shift.location }}</small>
+                            {{ shift.location }}
+                        {% else %}
+                            —
                         {% endif %}
-                    </div>
-                {% empty %}
-                    <span class="employee-no-shift">Off</span>
-                {% endfor %}
-            </div>
-        </div>
-    {% endfor %}
-
+                    </td>
+                    <td>
+                        {% if shift.status == "SCHEDULED" %}
+                            <span class="badge badge-success">Scheduled</span>
+                        {% elif shift.status == "COMPLETED" %}
+                            <span class="badge badge-muted">Completed</span>
+                        {% elif shift.status == "CANCELLED" %}
+                            <span class="badge badge-danger">Cancelled</span>
+                        {% else %}
+                            <span class="badge badge-muted">{{ shift.get_status_display }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6" class="empty-table">
+                        No shifts found for this month.
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </section>
 
 {% endblock %}

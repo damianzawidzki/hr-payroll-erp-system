@@ -1,12 +1,5 @@
 """
 Employee URL routes for HRHub Pro.
-
-This file connects all employee pages:
-- employee list
-- add employee
-- employee details
-- edit employee
-- delete employee
 """
 
 from django.urls import path

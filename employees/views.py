@@ -1,56 +1,68 @@
 """
 Employee views for HRHub Pro.
-
-This file contains the page logic for managing employee records.
-Users can list, search, filter, create, view, update and delete employees.
 """
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Case, IntegerField, Q, Value, When
 from django.shortcuts import get_object_or_404, redirect, render
 
-from departments.models import Department
+from accounts.permissions import can_manage_employees, can_view_employees
 
 from .forms import EmployeeForm
 from .models import Employee
 
 
+def get_employee_queryset():
+    """
+    Return employees with managers at the top, then the rest alphabetically.
+    """
+
+    return Employee.objects.select_related(
+        "department",
+        "manager",
+        "user",
+        "user__profile",
+    ).annotate(
+        role_order=Case(
+            When(user__profile__role="MANAGER", then=Value(0)),
+            default=Value(1),
+            output_field=IntegerField(),
+        )
+    ).order_by(
+        "role_order",
+        "first_name",
+        "last_name",
+    )
+
+
 @login_required
 def employee_list(request):
     """
-    Display employee records with search and filters.
+    Display employee records.
     """
 
-    search_query = request.GET.get("search", "")
-    department_filter = request.GET.get("department", "")
-    status_filter = request.GET.get("status", "")
+    if not can_view_employees(request.user):
+        messages.error(request, "You do not have permission to access employees.")
+        return redirect("role_redirect")
 
-    employees = Employee.objects.select_related("department", "user").all()
-    departments = Department.objects.filter(is_active=True)
+    search_query = request.GET.get("search", "")
+
+    employees = get_employee_queryset()
 
     if search_query:
         employees = employees.filter(
-            Q(employee_number__icontains=search_query)
-            | Q(first_name__icontains=search_query)
+            Q(first_name__icontains=search_query)
             | Q(last_name__icontains=search_query)
+            | Q(employee_number__icontains=search_query)
             | Q(email__icontains=search_query)
             | Q(job_title__icontains=search_query)
         )
 
-    if department_filter:
-        employees = employees.filter(department_id=department_filter)
-
-    if status_filter:
-        employees = employees.filter(status=status_filter)
-
     context = {
         "employees": employees,
-        "departments": departments,
-        "status_choices": Employee.STATUS_CHOICES,
         "search_query": search_query,
-        "department_filter": department_filter,
-        "status_filter": status_filter,
+        "can_edit_employees": can_manage_employees(request.user),
     }
 
     return render(request, "employees/employee_list.html", context)
@@ -59,16 +71,26 @@ def employee_list(request):
 @login_required
 def employee_detail(request, pk):
     """
-    Display one employee record.
+    Display employee details.
     """
 
+    if not can_view_employees(request.user):
+        messages.error(request, "You do not have permission to access employee details.")
+        return redirect("role_redirect")
+
     employee = get_object_or_404(
-        Employee.objects.select_related("department", "user"),
+        Employee.objects.select_related(
+            "department",
+            "manager",
+            "user",
+            "user__profile",
+        ),
         pk=pk,
     )
 
     context = {
         "employee": employee,
+        "can_edit_employees": can_manage_employees(request.user),
     }
 
     return render(request, "employees/employee_detail.html", context)
@@ -77,15 +99,19 @@ def employee_detail(request, pk):
 @login_required
 def employee_create(request):
     """
-    Create a new employee record.
+    Create an employee record.
     """
+
+    if not can_manage_employees(request.user):
+        messages.error(request, "You do not have permission to create employees.")
+        return redirect("employee_list")
 
     if request.method == "POST":
         form = EmployeeForm(request.POST)
 
         if form.is_valid():
             form.save()
-            messages.success(request, "Employee created successfully.")
+            messages.success(request, "Employee created.")
             return redirect("employee_list")
     else:
         form = EmployeeForm()
@@ -102,8 +128,12 @@ def employee_create(request):
 @login_required
 def employee_update(request, pk):
     """
-    Update an existing employee record.
+    Update an employee record.
     """
+
+    if not can_manage_employees(request.user):
+        messages.error(request, "You do not have permission to update employees.")
+        return redirect("employee_list")
 
     employee = get_object_or_404(Employee, pk=pk)
 
@@ -112,8 +142,8 @@ def employee_update(request, pk):
 
         if form.is_valid():
             form.save()
-            messages.success(request, "Employee updated successfully.")
-            return redirect("employee_detail", pk=employee.pk)
+            messages.success(request, "Employee updated.")
+            return redirect("employee_list")
     else:
         form = EmployeeForm(instance=employee)
 
@@ -133,11 +163,15 @@ def employee_delete(request, pk):
     Delete an employee record.
     """
 
+    if not can_manage_employees(request.user):
+        messages.error(request, "You do not have permission to delete employees.")
+        return redirect("employee_list")
+
     employee = get_object_or_404(Employee, pk=pk)
 
     if request.method == "POST":
         employee.delete()
-        messages.success(request, "Employee deleted successfully.")
+        messages.success(request, "Employee deleted.")
         return redirect("employee_list")
 
     context = {

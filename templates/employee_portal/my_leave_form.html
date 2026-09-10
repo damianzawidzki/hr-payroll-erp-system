@@ -1,54 +1,65 @@
 {% extends 'employee_portal/base_employee.html' %}
 
-{% block title %}Book Leave | HRHub Pro{% endblock %}
+{% block title %}{{ page_title }} | HRHub Pro{% endblock %}
 
-{% block page_title %}Book Leave{% endblock %}
+{% block page_title %}{{ page_title }}{% endblock %}
 
 {% block page_subtitle %}
-Submit a holiday or absence request
+Submit a leave request for manager review
 {% endblock %}
 
 {% block content %}
 
 <section class="form-card wide-form-card">
     <div class="form-header">
-        <h3>Leave Request</h3>
-        <p>Request details</p>
+        <h3>{{ page_title }}</h3>
+        <p>Select leave type, dates and duration</p>
     </div>
 
     <form method="post" class="standard-form">
         {% csrf_token %}
 
+        {% if form.non_field_errors %}
+            <div class="form-errors">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
         <div class="form-grid">
             <div class="form-group">
                 <label for="{{ form.leave_type.id_for_label }}">Leave Type</label>
                 {{ form.leave_type }}
+                {{ form.leave_type.errors }}
             </div>
 
             <div class="form-group">
                 <label for="{{ form.duration.id_for_label }}">Duration</label>
                 {{ form.duration }}
+                {{ form.duration.errors }}
             </div>
 
             <div class="form-group">
                 <label for="{{ form.start_date.id_for_label }}">Start Date</label>
                 {{ form.start_date }}
+                {{ form.start_date.errors }}
             </div>
 
             <div class="form-group">
                 <label for="{{ form.end_date.id_for_label }}">End Date</label>
                 {{ form.end_date }}
+                {{ form.end_date.errors }}
             </div>
         </div>
 
         <div class="form-group">
             <label for="{{ form.reason.id_for_label }}">Reason</label>
             {{ form.reason }}
+            {{ form.reason.errors }}
         </div>
 
         <div class="form-actions">
             <a href="{% url 'my_leave_list' %}" class="secondary-button">Cancel</a>
-            <button type="submit" class="primary-button">Submit Request</button>
+            <button type="submit" class="primary-button">{{ button_text }}</button>
         </div>
     </form>
 </section>

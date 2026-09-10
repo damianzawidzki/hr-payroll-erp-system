@@ -21,7 +21,10 @@ class PayslipAdmin(admin.ModelAdmin):
         "hours_worked",
         "overtime_hours",
         "gross_pay",
-        "deductions",
+        "paye_tax",
+        "national_insurance",
+        "other_deductions",
+        "total_deductions",
         "net_pay",
         "status",
     )
@@ -45,6 +48,9 @@ class PayslipAdmin(admin.ModelAdmin):
 
     readonly_fields = (
         "gross_pay",
+        "paye_tax",
+        "national_insurance",
+        "total_deductions",
         "net_pay",
         "created_at",
         "updated_at",

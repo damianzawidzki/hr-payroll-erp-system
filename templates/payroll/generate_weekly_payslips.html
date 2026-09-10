@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}Generate Weekly Payslips | HRHub Pro{% endblock %}
+
+{% block page_title %}Generate Weekly Payslips{% endblock %}
+
+{% block page_subtitle %}
+Create weekly payslips from attendance records
+{% endblock %}
+
+{% block content %}
+
+<section class="form-card wide-form-card">
+    <div class="form-header">
+        <h3>Generate Weekly Payslips</h3>
+        <p>Calculate weekly pay, PAYE tax, National Insurance and net pay</p>
+    </div>
+
+    <form method="post" class="standard-form">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="form-errors">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="{{ form.week_start.id_for_label }}">Week Start</label>
+                {{ form.week_start }}
+                {{ form.week_start.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.week_end.id_for_label }}">Week End</label>
+                {{ form.week_end }}
+                {{ form.week_end.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.payment_date.id_for_label }}">Payment Date</label>
+                {{ form.payment_date }}
+                {{ form.payment_date.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.status.id_for_label }}">Payslip Status</label>
+                {{ form.status }}
+                {{ form.status.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.hourly_rate.id_for_label }}">Hourly Rate</label>
+                {{ form.hourly_rate }}
+                {{ form.hourly_rate.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.standard_weekly_hours.id_for_label }}">Standard Weekly Hours</label>
+                {{ form.standard_weekly_hours }}
+                {{ form.standard_weekly_hours.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.overtime_rate.id_for_label }}">Overtime Rate</label>
+                {{ form.overtime_rate }}
+                {{ form.overtime_rate.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.bonus.id_for_label }}">Bonus</label>
+                {{ form.bonus }}
+                {{ form.bonus.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.other_deductions.id_for_label }}">Other Deductions</label>
+                {{ form.other_deductions }}
+                {{ form.other_deductions.errors }}
+            </div>
+        </div>
+
+        <div class="form-info-card">
+            <h4>Automatic Payroll Calculation</h4>
+
+            <div class="info-grid">
+                <div>
+                    <span>Gross Pay</span>
+                    <strong>Hours + overtime + bonus</strong>
+                </div>
+
+                <div>
+                    <span>PAYE Tax</span>
+                    <strong>Calculated automatically</strong>
+                </div>
+
+                <div>
+                    <span>National Insurance</span>
+                    <strong>Calculated automatically</strong>
+                </div>
+
+                <div>
+                    <span>Net Pay</span>
+                    <strong>Gross minus deductions</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Employees</label>
+
+            <div class="checkbox-panel">
+                {{ form.employees }}
+            </div>
+
+            {{ form.employees.errors }}
+        </div>
+
+        <div class="form-group checkbox-single-row">
+            {{ form.overwrite_existing }}
+            <label for="{{ form.overwrite_existing.id_for_label }}">
+                Update existing payslips if they already exist
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.notes.id_for_label }}">Notes</label>
+            {{ form.notes }}
+            {{ form.notes.errors }}
+        </div>
+
+        <div class="form-actions">
+            <a href="{% url 'payslip_list' %}" class="secondary-button">Cancel</a>
+            <button type="submit" class="primary-button">Generate Payslips</button>
+        </div>
+    </form>
+</section>
+
+{% endblock %}
